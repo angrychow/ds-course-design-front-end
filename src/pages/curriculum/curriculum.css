@@ -1,0 +1,4 @@
+.semi-calendar-week .semi-calendar-grid-skeleton li {
+  border-right: 1px solid var(--semi-color-border) !important;
+  border-left: 1px solid var(--semi-color-border) !important;
+}

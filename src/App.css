@@ -1,3 +1,15 @@
+.speed-button-unclicked:hover {
+  color:rgba(var(--semi-grey-3), 1)
+}
+
+.speed-button-unclicked {
+  color:rgba(var(--semi-grey-9), 1)
+}
+
+.speed-button-clicked {
+  color:rgba(var(--semi-grey-3), 1)
+}
+
 .App {
   text-align: center;
 }
