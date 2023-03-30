@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 281.75 218.77">
+  <g id="道路">
+    <g>
+      <rect x="137.49" y="82.39" width="80.79" height="51.18" style="fill: none"/>
+      <rect x="221.06" y="82.39" width="33.89" height="51.18" style="fill: none"/>
+      <polygon points="218.28 136.22 218.28 136.18 137.49 136.18 137.49 180.94 184 180.94 213.68 180.94 213.68 136.22 216.05 136.22 216.05 180.94 216.94 180.94 254.95 180.94 254.95 136.22 221.06 136.22 218.28 136.22" style="fill: none"/>
+      <rect x="137.49" y="29.79" width="80.79" height="50.06" style="fill: none"/>
+      <rect x="221.06" y="29.79" width="33.89" height="50.06" style="fill: none"/>
+      <polygon points="129.21 133.57 129.21 82.39 50.03 82.39 50.03 112.47 50.03 114.73 50.03 133.57 129.21 133.57" style="fill: none"/>
+      <polygon points="129.21 136.18 50.03 136.18 50.03 180.94 129.19 180.94 129.21 180.94 129.21 136.18" style="fill: none"/>
+      <rect x="50.03" y="29.79" width="79.18" height="50.06" style="fill: none"/>
+      <path d="M1032,681.41H934.29V662.52h120V506.07H844.06V591.4H826.83v2.27h17.23v68.85H926v18.89H850.72v2.53H1062v-2.53Zm19.71-21.53h-38.9V615.16h-2.37v44.72H934.29V615.11h80.79v0h36.67ZM934.29,612.5V561.33h80.79V612.5Zm117.46,0h-33.89V561.33h33.89Zm0-53.71h-33.89V508.73h33.89Zm-36.67-50.06v50.06H934.29V508.73Zm-168.25,0H926v50.06H846.83Zm0,82.67V561.33H926V612.5H846.83V591.4Zm0,68.48V615.11H926v44.77H846.83Z" transform="translate(-796.8 -478.94)" style="fill: #bfbfbf"/>
+    </g>
+    <rect x="9.13" width="265.02" height="7.3" style="fill: #bfbfbf"/>
+    <rect width="9.13" height="218.77" style="fill: #bfbfbf"/>
+    <rect x="274.15" width="7.61" height="218.77" style="fill: #c0bfbf"/>
+    <rect x="9.13" y="210.55" width="265.02" height="8.22" style="fill: #bfbfbf"/>
+  </g>
+  <g id="绿化带">
+    <rect x="71.22" y="32.35" width="35.99" height="12.26" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="51.95" y="85.97" width="35.3" height="20.5" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="52.24" y="110.32" width="35.01" height="20.68" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="93.51" y="85.97" width="32.26" height="20.5" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="93.51" y="110.32" width="32.26" height="20.68" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="224.16" y="33.76" width="28.67" height="41.81" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="232.59" y="124.95" width="20.23" height="6.32" style="fill: #92d14f;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+  </g>
+  <g id="建筑">
+    <g id="鸿通楼">
+      <path d="M837.08,501.62a1.29,1.29,0,0,1,.1.48,1.25,1.25,0,0,1-1.25,1.25H827.6a1.26,1.26,0,0,1-1.26-1.25,1.29,1.29,0,0,1,.1-.48H823.7v21h15.5v-21Z" transform="translate(-796.8 -478.94)" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M827.6,503.35h8.33a1.25,1.25,0,0,0,1.25-1.25,1.29,1.29,0,0,0-.1-.48,1.25,1.25,0,0,0-1.15-.78H827.6a1.26,1.26,0,0,0-1.16.78,1.29,1.29,0,0,0-.1.48A1.26,1.26,0,0,0,827.6,503.35Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g id="邮局">
+      <path d="M839.2,526.41v8.27a.78.78,0,0,0,.61-.75v-6.78A.76.76,0,0,0,839.2,526.41Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="42.39 43.67 26.9 43.67 26.9 60.25 42.39 60.25 42.39 55.74 42.39 47.47 42.39 43.67" style="fill: #ef8e59;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <rect id="ATM" x="26.9" y="60.25" width="15.49" height="8.65" style="fill: #ef8e59;stroke: #211613;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <g id="移动营业厅">
+      <path d="M838.42,565.88V561a.7.7,0,0,1,.7-.7l.08,0v-9.46H823.7V571.6h15.5v-5l-.08,0A.71.71,0,0,1,838.42,565.88Z" transform="translate(-796.8 -478.94)" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M839.2,560.29l-.08,0a.7.7,0,0,0-.7.7v4.91a.71.71,0,0,0,.7.7l.08,0a.68.68,0,0,0,.61-.68V561A.68.68,0,0,0,839.2,560.29Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <rect x="31.25" y="127.78" width="14.03" height="27.55" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect x="31.25" y="155.33" width="14.03" height="27.65" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <g id="教四楼">
+      <path d="M848.68,530.75V539a1,1,0,0,0,.73,1V529.8A1,1,0,0,0,848.68,530.75Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M879.39,545.11H892a.79.79,0,0,0,.75-.55H878.64A.79.79,0,0,0,879.39,545.11Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M922,529.74a.58.58,0,0,0-.18,0V540a.58.58,0,0,0,.18,0,.83.83,0,0,0,.83-.83v-8.6A.83.83,0,0,0,922,529.74Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="125.05 37.27 109.67 37.27 109.67 46.66 68.07 46.66 68.07 37.27 52.61 37.27 52.61 50.86 52.61 61.01 52.61 74.18 68.07 74.18 68.07 65.62 81.84 65.62 95.91 65.62 109.67 65.62 109.67 74.18 125.05 74.18 125.05 61.03 125.05 50.84 125.05 37.27" style="fill: #eb747a;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <ellipse id="校训石" cx="90.07" cy="108.71" rx="4.92" ry="7.84" style="fill: #fa3000;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect id="主席像" x="104.9" y="98.92" width="11.37" height="20.07" style="fill: #fa3000;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <g id="教三楼">
+      <path d="M848,632.58v8.18a1,1,0,0,0,.79,1v-10.1A1,1,0,0,0,848,632.58Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M891.77,618.33a.86.86,0,0,0-.85-.86H879.43a.87.87,0,0,0-.86.86v0h13.19Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M922.58,631.79v9.86a1,1,0,0,0,.71-.94v-8A1,1,0,0,0,922.58,631.79Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="125.78 139.41 94.97 139.41 81.78 139.41 51.95 139.41 51.95 152.68 51.95 162.78 51.95 175.28 125.78 175.28 125.78 162.72 125.78 152.85 125.78 139.41" style="fill: #eb747a;stroke: #221714;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g id="校医院">
+      <path d="M904.68,679.18h11.14a.77.77,0,0,0,.72-.5H904A.77.77,0,0,0,904.68,679.18Z" transform="translate(-796.8 -478.94)" style="fill: #231815"/>
+      <polygon points="125.78 186.91 53.39 186.91 53.39 199.74 107.15 199.74 119.74 199.74 125.78 199.74 125.78 186.91" style="fill: #eb747a;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g id="财务处">
+      <path d="M938.68,515.47h-.08a.74.74,0,0,0-.74.73v6.07a.74.74,0,0,0,1.48,0v-3.61h-.66Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="163.2 31.26 141.88 31.26 141.88 36.54 141.88 39.72 142.54 39.72 163.2 39.72 163.2 31.26" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <rect id="后勤楼" x="141.88" y="39.72" width="21.32" height="8.68" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <g id="行政办公楼_小白楼_" data-name="行政办公楼(小白楼)">
+      <path d="M981,509.26h-6.79a1,1,0,0,0-1,.93H982A1,1,0,0,0,981,509.26Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="185.15 31.26 176.46 31.26 168.64 31.26 168.64 56.55 194.58 56.55 194.58 31.26 185.15 31.26" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g id="教一楼">
+      <path d="M937.86,538.83v8a1.09,1.09,0,0,0,.82,1V537.78A1.09,1.09,0,0,0,937.86,538.83Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M968,555.05h13a.62.62,0,0,0,.61-.54H967.37A.63.63,0,0,0,968,555.05Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M1011.3,542.85h-.08V552l.08,0a.75.75,0,0,0,.74-.74v-7.71A.74.74,0,0,0,1011.3,542.85Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="157.46 49.86 141.88 49.86 141.88 58.84 141.88 68.98 141.88 79.85 157.46 79.85 157.46 75.57 157.46 56.55 157.46 49.86" style="fill: #eb747a;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="214.41 49.86 199.31 49.86 199.31 56.55 157.46 56.55 157.46 75.57 170.57 75.57 184.84 75.57 199.31 75.57 199.31 79.85 214.41 79.85 214.41 73.07 214.41 63.93 214.41 49.86" style="fill: #eb747a;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g id="主楼">
+      <path d="M980.21,580.76a.8.8,0,0,0-.8.8v8.74a.8.8,0,0,0,.8.8.7.7,0,0,0,.14,0V580.79A.7.7,0,0,0,980.21,580.76Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="183.54 86.76 183.54 101.85 183.54 112.14 183.54 128.19 216.08 128.19 216.08 86.76 183.54 86.76" style="fill: #eb747a;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <circle id="国旗" cx="945.98" cy="587.52" r="5.29" transform="matrix(0.38, -0.92, 0.92, 0.38, -755.63, 757.72)" style="fill: #fa3000;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <ellipse id="音乐喷泉" cx="168.18" cy="108.07" rx="9.7" ry="19.71" style="fill: #fff;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <g id="教二楼">
+      <path d="M979.41,628a1.27,1.27,0,0,0-1.26-1.26h-9.54a1.27,1.27,0,0,0-1.26,1.26s0,0,0,.06h12S979.41,628,979.41,628Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M1008.2,634.76v6.66a1,1,0,0,0,1-1v-4.71A1,1,0,0,0,1008.2,634.76Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M938.62,632.46v9.08a1,1,0,0,0,1,1V631.43A1,1,0,0,0,938.62,632.46Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="157.58 139.41 142.82 139.41 142.82 152.5 142.82 163.63 142.82 176.37 157.58 176.37 157.58 168.1 157.58 149.11 157.58 139.41" style="fill: #eb747a;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="211.4 139.41 197.07 139.41 197.07 149.11 182.6 149.11 170.56 149.11 157.58 149.11 157.58 168.1 197.07 168.1 197.07 176.37 211.4 176.37 211.4 162.49 211.4 155.83 211.4 139.41" style="fill: #eb747a;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g id="中门邮局">
+      <path d="M936.73,666.41a.75.75,0,0,0-.75.75v3.73a.75.75,0,0,0,.75.74.93.93,0,0,0,.23,0v-5.13A.64.64,0,0,0,936.73,666.41Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="140.16 184.85 140.16 187.52 140.16 192.65 140.16 195.79 152.95 195.79 152.95 184.85 140.16 184.85" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <rect id="家属区" x="154.47" y="184.86" width="109.52" height="15.29" style="fill: #bfbfbf;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <g id="科学会堂">
+      <path d="M1042,565.19H1031.2a1,1,0,0,0-.87.5h12.56A1,1,0,0,0,1042,565.19Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M1020,588.67V592a1,1,0,0,0,1,1v-5.32A1,1,0,0,0,1020,588.67Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <path d="M1022.45,601.25a.94.94,0,0,0,.94.93h2.86a.94.94,0,0,0,.94-.93,1.42,1.42,0,0,0,0-.2h-4.66A1.42,1.42,0,0,0,1022.45,601.25Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="253.46 86.76 246.09 86.76 233.53 86.76 224.16 86.76 224.16 108.75 224.16 114.07 224.16 122.11 225.69 122.11 230.35 122.11 253.46 122.11 253.46 86.76" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <g>
+      <path d="M1025.53,655.36a1.15,1.15,0,0,0,1.14,1.14H1040a1.15,1.15,0,0,0,1.14-1.14s0,0,0-.05h-15.61S1025.53,655.34,1025.53,655.36Z" transform="translate(-796.8 -478.94)" style="fill: #231815;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+      <polygon points="254.31 139.41 217.34 139.41 217.34 176.37 228.74 176.37 244.35 176.37 254.31 176.37 254.31 139.41" style="fill: #ef8e59;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    </g>
+    <circle id="李白烈士雕像" cx="249.19" cy="128.27" r="2.37" style="fill: #fa3000;stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+    <rect id="西门" x="24.64" y="92.67" width="5.39" height="32.28" rx="2.69" style="stroke: #231815;stroke-miterlimit: 10;stroke-width: 0.25px"/>
+  </g>
+  <g id="文字">
+    <text transform="translate(32.67 28.95) scale(0.95 1)" style="font-size: 4.692839622497559px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">鸿<tspan x="0" y="5.63">通</tspan><tspan x="0" y="11.26">楼</tspan></text>
+    <text transform="translate(32.11 50.29)" style="font-size: 6px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">邮<tspan x="0" y="7.2">局</tspan></text>
+    <text transform="translate(29.22 66.71)" style="font-size: 6px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI"><tspan style="letter-spacing: -0.11767578125em">A</tspan><tspan x="3.37" y="0">TM</tspan></text>
+    <text transform="translate(29.41 78.36)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">移动<tspan x="0" y="5.63">营业</tspan><tspan x="0" y="11.26">厅</tspan></text>
+    <text transform="translate(36.08 137.25)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">停<tspan x="0" y="5.63">车</tspan><tspan x="0" y="11.26">坪</tspan></text>
+    <text transform="translate(36.18 161.67)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">校<tspan x="0" y="5.63">车</tspan><tspan x="0" y="11.26">车</tspan><tspan x="0" y="16.89">库</tspan></text>
+    <text transform="translate(81.56 57.31)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">教四楼</text>
+    <text transform="translate(87.73 104.1)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">校<tspan x="0" y="5.63">训</tspan><tspan x="0" y="11.26">石</tspan></text>
+    <text transform="translate(108.14 104.11)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">主<tspan x="0" y="5.63">席</tspan><tspan x="0" y="11.26">像</tspan></text>
+    <text transform="translate(82.44 158.56)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">教三楼</text>
+    <text transform="translate(81.56 194.9)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">校医院</text>
+    <text transform="translate(145.54 37.01)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">财务处</text>
+    <text transform="translate(145.1 45.47)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">后勤楼</text>
+    <text transform="translate(174 40.03)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">行政<tspan x="0" y="5.63">办公楼</tspan><tspan x="0" y="11.26">(小白楼)</tspan></text>
+    <text transform="translate(170.76 67.86)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">教一楼</text>
+    <text transform="translate(146.48 106.95)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">国<tspan x="0" y="5.63">旗</tspan></text>
+    <text transform="translate(163.7 106.47)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">音乐<tspan x="0" y="5.63">喷泉</tspan></text>
+    <text transform="translate(196.06 107.98)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">主楼</text>
+    <text transform="translate(169.95 159.54)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">教二楼</text>
+    <text transform="translate(142.07 188.9) scale(0.94 1)" style="font-size: 4.288556098937988px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">中门<tspan x="0" y="5.15">邮局</tspan></text>
+    <text transform="translate(201.18 192.67)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">家属区</text>
+    <text transform="translate(234.22 102.57)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">科学<tspan x="0" y="5.63">会堂</tspan></text>
+    <text transform="translate(233.33 128.53) scale(0.94 1)" style="font-size: 2.2795424461364746px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">李白烈士雕像</text>
+    <text transform="translate(225.73 152.01)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">可信网络<tspan x="0" y="5.63">通信协同</tspan><tspan x="0" y="11.26">创新中心</tspan></text>
+    <text transform="translate(31.25 102.4) scale(1.11 1)" style="font-size: 4.692800045013428px;font-family: MicrosoftYaHeiUILight, Microsoft YaHei UI">西<tspan x="0" y="5.63">门</tspan></text>
+  </g>
+</svg>

@@ -10,6 +10,7 @@ import {
 import { Provider } from 'react-redux';
 import { Curriculum } from './pages/curriculum/curriculum';
 import axios from 'axios';
+import { NavigateActivity } from './pages/navigate/navigate';
 
 const router = createHashRouter([
   {
@@ -17,7 +18,7 @@ const router = createHashRouter([
     element: <App />,
     children: [{
       path: 'activity',
-      element: <div>123</div>
+      element: <NavigateActivity />
     }, {
       path: 'curriculum',
       element: <Curriculum/>

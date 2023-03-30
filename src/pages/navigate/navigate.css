@@ -1,0 +1,11 @@
+.scrollbarContainer::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollbarContainer::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgba(0,0,0,0.2);
+}
+.scrollbarContainer::-webkit-scrollbar-track {
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}

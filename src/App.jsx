@@ -200,8 +200,8 @@ export function App(props) {
               { itemKey: "curriculum", text: "课程表", icon: <IconUser /> },
               { itemKey: "activity", text: "活动管理", icon: <IconStar /> },
             ]}
-            onSelect={(data) => console.log("trigger onSelect: ", data)}
-            onClick={(data) => console.log("trigger onClick: ", data)}
+            // onSelect={(data) => console.log("trigger onSelect: ", data)}
+            // onClick={(data) => console.log("trigger onClick: ", data)}
             defaultSelectedKeys={location.pathname.split("/")}
           />
         </Sider>

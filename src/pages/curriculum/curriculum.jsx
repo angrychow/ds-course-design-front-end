@@ -20,8 +20,8 @@ export class Curriculum extends React.Component {
     this.events = [
       {
         key: "0",
-        start: new Date(2023, 2, 24, 14, 45, 0),
-        end: new Date(2023, 2, 24, 19, 45, 0),
+        start: new Date(2023, 2, 28, 14, 45, 0),
+        end: new Date(2023, 2, 28, 19, 45, 0),
         text: "这是一个活动",
         children: (
           <div
