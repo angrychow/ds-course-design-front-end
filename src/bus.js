@@ -1,5 +1,5 @@
 
 export const bus = {
-  date: new Date("2023-03-21 12:00:00"),
+  date: new Date("2023-03-25 23:50:00"),
   timeState: 'pause',
 }

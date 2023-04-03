@@ -11,6 +11,8 @@ import { Provider } from 'react-redux';
 import { Curriculum } from './pages/curriculum/curriculum';
 import axios from 'axios';
 import { NavigateActivity } from './pages/navigate/navigate';
+import { myAxios } from './utils/fetch';
+import { Login } from './pages/login/login';
 
 const router = createHashRouter([
   {
@@ -24,6 +26,10 @@ const router = createHashRouter([
       element: <Curriculum/>
     }]
   },
+  {
+    path: "login/",
+    element: <Login></Login>
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -31,7 +37,8 @@ root.render(
   <RouterProvider router={router} />
   
 );
-axios.get('/api').then((data) => {
+
+myAxios.get('/ping').then((data) => {
   console.log(data);
 })
 

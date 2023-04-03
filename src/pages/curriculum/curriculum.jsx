@@ -1,13 +1,41 @@
-import { Calendar, Modal } from "@douyinfe/semi-ui";
+import {
+  Calendar,
+  Modal,
+  Form,
+  Row,
+  Col,
+  Button,
+  Toast,
+} from "@douyinfe/semi-ui";
 import React from "react";
 import "./curriculum.css";
+import { bus } from "../../bus";
+import { timeChangeEmiiter } from "../../utils/events";
 
 export class Curriculum extends React.Component {
   constructor(props) {
     super(props);
     this.eventText = "";
     this.events = [];
-    this.handleClick = this.handleClick.bind(this);
+    this.handleClickEvent = this.handleClickEvent.bind(this);
+    this.handleClickGrid = this.handleClickGrid.bind(this);
+    this.handleTimeChange = this.handleTimeChange.bind(this);
+    this.selectFormDate = bus.date;
+    this.state = {
+      currentTime: bus.date,
+      isCheckedCycle: false,
+      isCheckedGroup: false,
+      userArray: [
+        { name: "安戈瑞抽", id: "2021211116" },
+        { name: "法五五五", id: "2021211110" },
+        { name: "Octopus", id: "2021211111" },
+      ],
+      typeArray: [
+        { name: "类型1", key: "type1" },
+        { name: "类型2", key: "type2" },
+      ],
+    };
+    timeChangeEmiiter.addListener("timeChange", this.handleTimeChange);
     const dailyEventStyle = {
       borderRadius: "3px",
       boxSizing: "border-box",
@@ -20,14 +48,15 @@ export class Curriculum extends React.Component {
     this.events = [
       {
         key: "0",
-        start: new Date(2023, 2, 28, 14, 45, 0),
-        end: new Date(2023, 2, 28, 19, 45, 0),
+        start: new Date(2023, 2, 25, 14, 45, 0),
+        end: new Date(2023, 2, 25, 19, 45, 0),
         text: "这是一个活动",
         children: (
           <div
             style={dailyEventStyle}
             onClick={(e) => {
-              this.handleClick("这是一个活动");
+              this.handleClickEvent("这是一个活动", e);
+              e.stopPropagation();
             }}
           >
             吃饭睡觉打豆豆
@@ -36,8 +65,179 @@ export class Curriculum extends React.Component {
       },
     ];
   }
-  handleClick(text, e) {
+  handleClickEvent(text, e) {
     Modal.info({ title: "事件详情", footer: <></>, content: text });
+  }
+
+  handleTimeChange(date) {
+    this.setState({ currentTime: bus.date });
+    console.log(bus.date);
+  }
+
+  handleClickGrid(date) {
+    const optionTimeSelect = [];
+    for (let i = 6; i <= 22; i++) {
+      optionTimeSelect.push(
+        <Form.Select.Option value={i} key={i}>
+          {i} 点
+        </Form.Select.Option>
+      );
+    }
+    const optionUser = this.state.userArray.map((item) => {
+      return (
+        <Form.Select.Option value={item.id} key={item.id}>
+          {item.name}
+        </Form.Select.Option>
+      );
+    });
+    const optionType = this.state.typeArray.map((item) => {
+      return (
+        <Form.Select.Option value={item.key} key={item.key}>
+          {item.name}
+        </Form.Select.Option>
+      );
+    });
+    Modal.info({
+      title: "添加事件",
+      footer: <></>,
+      content: (
+        <>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexFlow: "column",
+              alignContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div>添加事件</div>
+            <Form
+              style={{
+                width: "100%",
+                display: "flex",
+                flexFlow: "column",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+              initValues={{
+                startHour:
+                  date.getHours() >= 6 && date.getHours() <= 22
+                    ? date.getHours()
+                    : 6,
+                activityDate: date,
+              }}
+              onSubmit={(values) => {
+                // Toast.info({
+                //   opts: values.toString(),
+                // });
+                console.log(values);
+              }}
+            >
+              {(formState, value, formAPI) => (
+                <>
+                  <Row style={{ width: "70%" }}>
+                    <Form.DatePicker
+                      field="activityDate"
+                      label="事件日期"
+                      style={{
+                        width: "100%",
+                      }}
+                    ></Form.DatePicker>
+                  </Row>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={11}>
+                      <Form.Select
+                        field="startHour"
+                        label="开始时间"
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {optionTimeSelect}
+                      </Form.Select>
+                    </Col>
+                    <Col span={11} offset={2}>
+                      <Form.Select
+                        field="endHour"
+                        label="结束时间"
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {optionTimeSelect}
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={8} offset={4}>
+                      <Form.Switch
+                        field="isCycle"
+                        label="是否为周期事件"
+                        onChange={(checked) => {
+                          this.setState({ isCheckedCycle: checked });
+                        }}
+                      />
+                    </Col>
+                    <Col span={8} offset={4}>
+                      <Form.Switch
+                        field="isGroup"
+                        label="是否为群体事件"
+                        onChange={(checked) => {
+                          this.setState({ isCheckedGroup: checked });
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                  {this.state.isCheckedGroup && (
+                    <Row style={{ width: "100%" }}>
+                      <Form.Select
+                        multiple={true}
+                        style={{ width: "100%" }}
+                        label="参与群体人员"
+                        field="groupSelect"
+                      >
+                        {optionUser}
+                      </Form.Select>
+                    </Row>
+                  )}
+                  <Row style={{ width: "70%" }}>
+                    <Form.Select
+                      field="activityType"
+                      label="事件类型"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionType}
+                    </Form.Select>
+                  </Row>
+                  <Row style={{ width: "70%" }}>
+                    <Form.Input
+                      field="activityName"
+                      label="事件名称"
+                      style={{
+                        width: "100%",
+                      }}
+                    ></Form.Input>
+                  </Row>
+                  <Row style={{ width: "30%" }}>
+                    <Col span={24}>
+                      <Button type="primary" htmlType="submit">
+                        提交
+                      </Button>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </Form>
+          </div>
+        </>
+      ),
+      afterClose: () => {
+        this.setState({ isCheckedCycle: false, isCheckedGroup: false });
+      },
+    });
   }
 
   render() {
@@ -77,6 +277,14 @@ export class Curriculum extends React.Component {
               width: "100%",
             }}
             events={this.events}
+            onClick={(e, d) => {
+              // console.log("当前被选择的grid：" + d);
+              // console.log(typeof d);
+              this.selectFormDate = d;
+              this.handleClickGrid(d);
+            }}
+            displayValue={this.state.currentTime}
+            showCurrTime={false}
           />
         </div>
       </div>

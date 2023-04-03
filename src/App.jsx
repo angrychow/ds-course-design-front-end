@@ -10,7 +10,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import buptIcon from "./static/bupt-icon.PNG";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconUserCircle,
   IconBackward,
@@ -20,6 +20,7 @@ import {
   IconStar,
 } from "@douyinfe/semi-icons";
 import { bus } from "./bus";
+import { timeChangeEmiiter } from "./utils/events";
 
 const { Header, Footer, Content, Sider } = Layout;
 
@@ -27,7 +28,26 @@ export function App(props) {
   const [timeState, setTimeState] = useState(bus.timeState);
   const [date, setDate] = useState(bus.date);
   const location = useLocation();
-  console.log(location);
+  const timeChangeHandler = () => {
+    if (timeState == "forward") {
+      let timeStamp = date.getTime() + 1000 * 60 * 10;
+      setDate(new Date(timeStamp));
+      bus.date = date;
+      timeChangeEmiiter.emit("timeChange");
+    } else if (timeState == "backward") {
+      let timeStamp = date.getTime() - 1000 * 60 * 10;
+      setDate(new Date(timeStamp));
+      bus.date = date;
+      timeChangeEmiiter.emit("timeChange");
+    }
+  };
+  var timeChangeInterval = setInterval(timeChangeHandler, 1000);
+  useEffect(() => {
+    return function cleanup() {
+      clearInterval(timeChangeInterval);
+    };
+  });
+  // console.log(location);
   return (
     <Layout
       style={{
