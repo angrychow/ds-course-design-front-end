@@ -18,6 +18,8 @@ import {
   IconFastForward,
   IconUser,
   IconStar,
+  IconPaperclip,
+  IconMapPin,
 } from "@douyinfe/semi-icons";
 import { bus } from "./bus";
 import { timeChangeEmiiter } from "./utils/events";
@@ -204,6 +206,7 @@ export function App(props) {
               const routerMap = {
                 curriculum: "/curriculum",
                 activity: "/activity",
+                temporary: "/temporary",
               };
               return (
                 <Link
@@ -218,7 +221,12 @@ export function App(props) {
             bodyStyle={{ height: "100%" }}
             items={[
               { itemKey: "curriculum", text: "课程表", icon: <IconUser /> },
-              { itemKey: "activity", text: "活动管理", icon: <IconStar /> },
+              { itemKey: "activity", text: "活动管理", icon: <IconMapPin /> },
+              {
+                itemKey: "temporary",
+                text: "临时事务管理",
+                icon: <IconPaperclip />,
+              },
             ]}
             // onSelect={(data) => console.log("trigger onSelect: ", data)}
             // onClick={(data) => console.log("trigger onClick: ", data)}

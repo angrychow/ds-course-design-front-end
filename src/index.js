@@ -13,6 +13,7 @@ import axios from 'axios';
 import { NavigateActivity } from './pages/navigate/navigate';
 import { myAxios } from './utils/fetch';
 import { Login } from './pages/login/login';
+import { Temporary } from './pages/temporary/temporary';
 
 const router = createHashRouter([
   {
@@ -24,11 +25,14 @@ const router = createHashRouter([
     }, {
       path: 'curriculum',
       element: <Curriculum/>
+    }, {
+      path: 'temporary',
+      element: <Temporary/>
     }]
   },
   {
     path: "login/",
-    element: <Login></Login>
+    element: <Login/>
   }
 ]);
 
