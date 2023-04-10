@@ -1,77 +1,175 @@
 import { IconClock, IconMapPin } from "@douyinfe/semi-icons";
 import { IllustrationNoContent } from "@douyinfe/semi-illustrations";
-import { Button, Card, Empty, Row } from "@douyinfe/semi-ui";
+import { Button, Card, Empty, Row, Form, Modal, Col } from "@douyinfe/semi-ui";
 import React from "react";
+import { mockActivityData } from "./temporary-mock";
+import { bus } from "../../bus";
 
 export class Temporary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      temporaryActivityArray: [
-        {
-          time: new Date(),
-          place: "学生发展中心 209",
-          type: "电竞",
-          name: "The Binding of Issac 锦标赛",
-        },
-        {
-          time: new Date("2023-04-05"),
-          place: "主楼 902",
-          type: "八卦",
-          name: "梁宸恋爱史分享会",
-        },
-        {
-          time: new Date(),
-          place: "学五 1314",
-          type: "桌游",
-          name: "三国杀身份军争八人场",
-        },
-        {
-          time: new Date(),
-          place: "教三二楼厕所",
-          type: "聚餐",
-          name: "高级料理会所",
-        },
-        {
-          time: new Date(),
-          place: "沙河学生活动中心 208",
-          type: "电竞",
-          name: "Rainbow Six: Seige 锦标赛",
-        },
-        {
-          time: new Date("2023-04-05"),
-          place: "主楼 902",
-          type: "八卦",
-          name: "章成文研究生保送到耶鲁大学分享会",
-        },
-        {
-          time: new Date(),
-          place: "学五 1314",
-          type: "桌游",
-          name: "狼人杀八人场狼人杀八人场狼人杀八人场狼人杀八人场",
-        },
-        {
-          time: new Date(),
-          place: "沙河学生活动中心 208",
-          type: "电竞",
-          name: "Rainbow Six: Seige 锦标赛",
-        },
-        {
-          time: new Date("2023-04-05"),
-          place: "主楼 902",
-          type: "八卦",
-          name: "章成文研究生保送到耶鲁大学分享会",
-        },
-        {
-          time: new Date(),
-          place: "学五 1314",
-          type: "桌游",
-          name: "狼人杀八人场",
-        },
-      ],
+      temporaryActivityArray: mockActivityData,
+      typeArray: bus.tempTypeArray,
+      places: bus.places,
     };
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
+  handleAdd() {
+    this.handleClick(-1);
+  }
+  handleClick(index) {
+    console.log(index);
+    const optionTimeSelect = [];
+    const findEvent = this.state.temporaryActivityArray.find(
+      (item) => item.id == index
+    );
+    // console.log(findEvent);
+    let startHour = 6;
+    if (findEvent) {
+      if (findEvent.time.getHours() >= 22) {
+        startHour = 22;
+      } else if (findEvent.time.getHours() >= 6) {
+        startHour = findEvent.time.getHours();
+      }
+    }
 
+    const initVal = findEvent
+      ? {
+          activityDate: findEvent.time,
+          activityType: this.state.typeArray.find(
+            (item) => item.name == findEvent.type
+          ).id,
+          activityPlace: this.state.places.find(
+            (item) => item.name == findEvent.place
+          ).id,
+          activityName: findEvent.name,
+          startHour: startHour,
+        }
+      : {};
+    console.log(initVal);
+    for (let i = 6; i <= 22; i++) {
+      optionTimeSelect.push(
+        <Form.Select.Option value={i} key={i}>
+          {i} 点
+        </Form.Select.Option>
+      );
+    }
+    const optionType = this.state.typeArray.map((item) => {
+      return (
+        <Form.Select.Option value={item.id} key={item.id}>
+          {item.name}
+        </Form.Select.Option>
+      );
+    });
+    const optionPlaces = this.state.places.map((item) => {
+      return (
+        <Form.Select.Option value={item.id} key={item.id}>
+          {item.name}
+        </Form.Select.Option>
+      );
+    });
+    Modal.info({
+      title: "添加或修改临时事件",
+      footer: <></>,
+      content: (
+        <>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexFlow: "column",
+              alignContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Form
+              style={{
+                width: "100%",
+                display: "flex",
+                flexFlow: "column",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+              initValues={initVal}
+              onSubmit={(values) => {
+                // Toast.info({
+                //   opts: values.toString(),
+                // });
+                console.log(values);
+              }}
+            >
+              {(formState, value, formAPI) => (
+                <>
+                  <Row style={{ width: "70%" }}>
+                    <Form.DatePicker
+                      field="activityDate"
+                      label="事件日期"
+                      style={{
+                        width: "100%",
+                      }}
+                    ></Form.DatePicker>
+                  </Row>
+                  <Row style={{ width: "70%" }}>
+                    <Col span={24} offset={0}>
+                      <Form.Select
+                        field="startHour"
+                        label="发生时间"
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {optionTimeSelect}
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                  <Row style={{ width: "70%" }}>
+                    <Form.Select
+                      field="activityType"
+                      label="事件类型"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionType}
+                    </Form.Select>
+                  </Row>
+                  <Row style={{ width: "70%" }}>
+                    <Form.Select
+                      field="activityPlace"
+                      label="事件地点"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionPlaces}
+                    </Form.Select>
+                  </Row>
+                  <Row style={{ width: "70%" }}>
+                    <Form.Input
+                      field="activityName"
+                      label="事件名称"
+                      style={{
+                        width: "100%",
+                      }}
+                    ></Form.Input>
+                  </Row>
+                  <Row style={{ width: "30%" }}>
+                    <Col span={24}>
+                      <Button type="primary" htmlType="submit">
+                        提交
+                      </Button>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </Form>
+          </div>
+        </>
+      ),
+    });
+  }
   render() {
     const noActivity = (
       <div
@@ -104,7 +202,11 @@ export class Temporary extends React.Component {
               placeItems: "center",
             }}
           >
-            <Button theme="solid" type="primary">
+            <Button
+              theme="solid"
+              type="primary"
+              onClick={() => this.handleAdd()}
+            >
               添加临时任务
             </Button>
           </div>
@@ -120,6 +222,8 @@ export class Temporary extends React.Component {
             style={{ marginLeft: "50px", marginBottom: "50px" }}
             title={item.name}
             shadows="hover"
+            onClick={() => this.handleClick(item.id)}
+            key={item.id}
             headerExtraContent={
               <div
                 style={{
@@ -190,6 +294,7 @@ export class Temporary extends React.Component {
                 marginLeft: "50px",
                 marginTop: "20px",
               }}
+              onClick={() => this.handleAdd()}
             >
               添加临时任务
             </Button>

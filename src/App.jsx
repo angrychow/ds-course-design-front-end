@@ -20,6 +20,7 @@ import {
   IconStar,
   IconPaperclip,
   IconMapPin,
+  IconArchive,
 } from "@douyinfe/semi-icons";
 import { bus } from "./bus";
 import { timeChangeEmiiter } from "./utils/events";
@@ -205,8 +206,9 @@ export function App(props) {
             renderWrapper={({ itemElement, isSubNav, isInSubNav, props }) => {
               const routerMap = {
                 curriculum: "/curriculum",
-                activity: "/activity",
+                navigate: "/navigate",
                 temporary: "/temporary",
+                activity: "/activity",
               };
               return (
                 <Link
@@ -221,11 +223,16 @@ export function App(props) {
             bodyStyle={{ height: "100%" }}
             items={[
               { itemKey: "curriculum", text: "课程表", icon: <IconUser /> },
-              { itemKey: "activity", text: "活动管理", icon: <IconMapPin /> },
+              { itemKey: "navigate", text: "地图导航", icon: <IconMapPin /> },
               {
                 itemKey: "temporary",
                 text: "临时事务管理",
                 icon: <IconPaperclip />,
+              },
+              {
+                itemKey: "activity",
+                text: "事件管理",
+                icon: <IconArchive />,
               },
             ]}
             // onSelect={(data) => console.log("trigger onSelect: ", data)}

@@ -1,75 +1,44 @@
 import {
-  Calendar,
-  Modal,
-  Form,
-  Row,
-  Col,
+  IconClock,
+  IconDelete,
+  IconMapPin,
+  IconWrench,
+} from "@douyinfe/semi-icons";
+import { IllustrationNoContent } from "@douyinfe/semi-illustrations";
+import {
   Button,
-  Toast,
+  Card,
+  Empty,
+  Row,
+  Form,
+  Modal,
+  Col,
+  Table,
 } from "@douyinfe/semi-ui";
 import React from "react";
-import "./curriculum.css";
-import { bus } from "../../bus";
-import { timeChangeEmiiter } from "../../utils/events";
 import { activityMock } from "./activity-mock";
+import { bus } from "../../bus";
 
-export class Curriculum extends React.Component {
+export class ActivityManage extends React.Component {
   constructor(props) {
     super(props);
-    this.eventText = "";
-    this.events = [];
-    this.handleClickEvent = this.handleClickEvent.bind(this);
-    this.handleClickGrid = this.handleClickGrid.bind(this);
-    this.handleTimeChange = this.handleTimeChange.bind(this);
-    this.selectFormDate = bus.date;
     this.state = {
-      currentTime: bus.date,
+      activityArray: activityMock,
+      typeArray: bus.activityTypeArray,
+      places: bus.places,
+      userArray: bus.userArray,
       isCheckedCycle: false,
       isCheckedGroup: false,
-      activityArray: activityMock,
-      userArray: bus.userArray,
-      typeArray: bus.activityTypeArray,
     };
-    timeChangeEmiiter.addListener("timeChange", this.handleTimeChange);
-    const dailyEventStyle = {
-      borderRadius: "3px",
-      boxSizing: "border-box",
-      border: "var(--semi-color-primary) 1px solid",
-      padding: "10px",
-      backgroundColor: "var(--semi-color-primary-light-default)",
-      height: "100%",
-      overflow: "hidden",
-    };
-    this.events = this.state.activityArray.map((item) => {
-      return {
-        key: Number.toString(item.id),
-        start: item.start,
-        end: item.end,
-        text: item.text,
-        children: (
-          <div
-            style={dailyEventStyle}
-            onClick={(e) => {
-              this.handleClickEvent(item.text, e);
-              e.stopPropagation();
-            }}
-          >
-            {item.name}
-          </div>
-        ),
-      };
-    });
-  }
-  handleClickEvent(text, e) {
-    Modal.info({ title: "事件详情", footer: <></>, content: text });
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  handleTimeChange(date) {
-    this.setState({ currentTime: bus.date });
-    console.log(bus.date);
+  handleAdd() {
+    this.handleClick(-1);
   }
 
-  handleClickGrid(date) {
+  handleClick(id) {
     const optionTimeSelect = [];
     for (let i = 6; i <= 22; i++) {
       optionTimeSelect.push(
@@ -92,6 +61,22 @@ export class Curriculum extends React.Component {
         </Form.Select.Option>
       );
     });
+    const findActivity = this.state.activityArray.find((item) => item.id == id);
+    const initData = {};
+    if (findActivity) {
+      this.state.isCheckedCycle = findActivity.isCycle;
+      this.state.isCheckedGroup = findActivity.isCheckedGroup;
+      initData["activityDate"] = findActivity.start;
+      initData["startHour"] = findActivity.start.getHours();
+      initData["endHour"] = findActivity.end.getHours();
+      initData["isCycle"] = findActivity.isCycle;
+      initData["isGroup"] = findActivity.isGroup;
+      initData["activityName"] = findActivity.name;
+      initData["activityType"] = this.state.typeArray.find(
+        (item) => item.name == findActivity.activityType
+      ).id;
+      // initData[]
+    }
     Modal.info({
       title: "添加事件",
       footer: <></>,
@@ -115,13 +100,7 @@ export class Curriculum extends React.Component {
                 alignContent: "center",
                 alignItems: "center",
               }}
-              initValues={{
-                startHour:
-                  date.getHours() >= 6 && date.getHours() <= 22
-                    ? date.getHours()
-                    : 6,
-                activityDate: date,
-              }}
+              initValues={initData}
               onSubmit={(values) => {
                 // Toast.info({
                 //   opts: values.toString(),
@@ -184,7 +163,8 @@ export class Curriculum extends React.Component {
                       />
                     </Col>
                   </Row>
-                  {this.state.isCheckedGroup && (
+                  {(this.state.isCheckedGroup ||
+                    (findActivity && findActivity.isGroup)) && (
                     <Row style={{ width: "100%" }}>
                       <Form.Select
                         multiple={true}
@@ -236,53 +216,151 @@ export class Curriculum extends React.Component {
   }
 
   render() {
-    return (
+    const column = [
+      {
+        title: "事件名称",
+        dataIndex: "name",
+      },
+      {
+        title: "时间",
+        dataIndex: "time",
+        render: (text, record, index) => (
+          <div>
+            {record.start.getMonth() +
+              1 +
+              "月" +
+              record.start.getDate() +
+              "日 " +
+              record.start.getHours() +
+              "时-" +
+              record.end.getHours() +
+              "时"}
+          </div>
+        ),
+      },
+      {
+        title: "地点或 URL",
+        dataIndex: "place",
+        width: 500,
+        render: (text, record, index) => (
+          <div
+            style={{
+              overflowWrap: "break-word",
+              maxWidth: "500px",
+            }}
+          >
+            {record.isPlace
+              ? this.state.places.find((item) => item.id == record.placeID).name
+              : record.conferenceUrl}
+          </div>
+        ),
+      },
+      {
+        title: "修改",
+        dataIndex: "modify",
+        width: 50,
+        render: (text, record, index) => (
+          <div>
+            <Button
+              icon={<IconWrench />}
+              theme="borderless"
+              onClick={() => this.handleClick(record.id)}
+            />
+          </div>
+        ),
+      },
+      {
+        title: "删除",
+        dataIndex: "delete",
+        width: 50,
+        render: (text, record, index) => (
+          <div>
+            <Button icon={<IconDelete />} theme="borderless" />
+          </div>
+        ),
+      },
+    ];
+
+    const noActivity = (
       <div
         style={{
           width: "100%",
           height: "100%",
-          overflowY: "scroll",
+          display: "flex",
+          flexFlow: "row",
+          flexWrap: "wrap",
+          placeContent: "center",
+          placeContent: "center",
         }}
       >
-        <div
+        <Empty
+          image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
+          title="您现在没有活动哦 ~"
           style={{
-            marginLeft: "5%",
-            width: "90%",
-            marginTop: "20px",
             display: "flex",
             flexFlow: "column",
+            placeContent: "center",
             placeItems: "center",
           }}
         >
           <div
             style={{
+              width: "100%",
               display: "flex",
+              flexFlow: "column",
               placeContent: "center",
-              fontSize: "28px",
-              padding: "10px",
+              placeItems: "center",
             }}
           >
-            课程表
+            <Button
+              theme="solid"
+              type="primary"
+              onClick={() => this.handleAdd()}
+            >
+              添加活动
+            </Button>
           </div>
-          <Calendar
-            mode="week"
-            style={{
-              border: "1px solid rgba(var(--semi-grey-3), 0.5)",
-              borderRadius: "5px",
-              width: "100%",
-            }}
-            events={this.events}
-            onClick={(e, d) => {
-              // console.log("当前被选择的grid：" + d);
-              // console.log(typeof d);
-              this.selectFormDate = d;
-              this.handleClickGrid(d);
-            }}
-            displayValue={this.state.currentTime}
-            showCurrTime={false}
-          />
-        </div>
+        </Empty>
       </div>
     );
+    let haveTempEvent = this.state.activityArray.length > 0;
+    let haveActivity;
+    if (haveTempEvent) {
+      haveActivity = (
+        <div
+          style={{
+            width: "100%",
+            overflowY: "hidden",
+          }}
+        >
+          <Row
+            style={{
+              width: "100%",
+              height: "70px",
+            }}
+          >
+            <Button
+              theme="solid"
+              type="primary"
+              style={{
+                marginLeft: "50px",
+                marginTop: "20px",
+              }}
+              onClick={() => this.handleAdd()}
+            >
+              添加活动
+            </Button>
+          </Row>
+          <Row style={{ width: "100%", height: "calc(100% - 200px)" }}>
+            <Table
+              columns={column}
+              dataSource={this.state.activityArray}
+              pagination={{ pageSize: 8 }}
+            />
+          </Row>
+        </div>
+      );
+    }
+    return haveTempEvent ? haveActivity : noActivity;
   }
 }

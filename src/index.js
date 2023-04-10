@@ -14,13 +14,14 @@ import { NavigateActivity } from './pages/navigate/navigate';
 import { myAxios } from './utils/fetch';
 import { Login } from './pages/login/login';
 import { Temporary } from './pages/temporary/temporary';
+import { ActivityManage } from './pages/activity/activity';
 
 const router = createHashRouter([
   {
     path: "/",
     element: <App />,
     children: [{
-      path: 'activity',
+      path: 'navigate',
       element: <NavigateActivity />
     }, {
       path: 'curriculum',
@@ -28,6 +29,9 @@ const router = createHashRouter([
     }, {
       path: 'temporary',
       element: <Temporary/>
+      }, {
+      path: 'activity',
+      element: <ActivityManage/>
     }]
   },
   {
