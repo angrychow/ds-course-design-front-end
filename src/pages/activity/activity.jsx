@@ -29,6 +29,8 @@ export class ActivityManage extends React.Component {
       userArray: bus.userArray,
       isCheckedCycle: false,
       isCheckedGroup: false,
+      isCheckedPlace: false,
+      placesArray: bus.places,
     };
     this.handleAdd = this.handleAdd.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -62,10 +64,12 @@ export class ActivityManage extends React.Component {
       );
     });
     const findActivity = this.state.activityArray.find((item) => item.id == id);
-    const initData = {};
+    var initData = {};
     if (findActivity) {
       this.state.isCheckedCycle = findActivity.isCycle;
-      this.state.isCheckedGroup = findActivity.isCheckedGroup;
+      this.state.isCheckedGroup = findActivity.isGroup;
+      this.state.isCheckedPlace = findActivity.isPlace;
+      // 字段名字不一样，reassign
       initData["activityDate"] = findActivity.start;
       initData["startHour"] = findActivity.start.getHours();
       initData["endHour"] = findActivity.end.getHours();
@@ -75,8 +79,18 @@ export class ActivityManage extends React.Component {
       initData["activityType"] = this.state.typeArray.find(
         (item) => item.name == findActivity.activityType
       ).id;
+      initData["isPlace"] = findActivity.isPlace;
+      initData["conferenceUrl"] = findActivity.conferenceUrl;
+      initData["placeID"] = findActivity.placeID;
+      // initData = JSON.parse(JSON.stringify(find))
+      // initData.push(...findActivity);
       // initData[]
     }
+    const optionPlaces = this.state.placesArray.map((item) => (
+      <Form.Select.Option value={item.id} key={item.id}>
+        {item.name}
+      </Form.Select.Option>
+    ));
     Modal.info({
       title: "添加事件",
       footer: <></>,
@@ -151,6 +165,7 @@ export class ActivityManage extends React.Component {
                         onChange={(checked) => {
                           this.setState({ isCheckedCycle: checked });
                         }}
+                        disabled={findActivity}
                       />
                     </Col>
                     <Col span={8} offset={4}>
@@ -160,6 +175,19 @@ export class ActivityManage extends React.Component {
                         onChange={(checked) => {
                           this.setState({ isCheckedGroup: checked });
                         }}
+                        disabled={findActivity}
+                      />
+                    </Col>
+                  </Row>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={8} offset={4}>
+                      <Form.Switch
+                        field="isPlace"
+                        label="是否为线下活动"
+                        onChange={(checked) => {
+                          this.setState({ isCheckedPlace: checked });
+                        }}
+                        disabled={findActivity}
                       />
                     </Col>
                   </Row>
@@ -174,6 +202,28 @@ export class ActivityManage extends React.Component {
                       >
                         {optionUser}
                       </Form.Select>
+                    </Row>
+                  )}
+                  {(this.state.isCheckedPlace ||
+                    (findActivity && findActivity.isPlace)) && (
+                    <Row style={{ width: "100%" }}>
+                      <Form.Select
+                        style={{ width: "100%" }}
+                        label="地点"
+                        field="placeID"
+                      >
+                        {optionPlaces}
+                      </Form.Select>
+                    </Row>
+                  )}
+                  {(!this.state.isCheckedPlace ||
+                    (findActivity && !findActivity.isPlace)) && (
+                    <Row style={{ width: "100%" }}>
+                      <Form.Input
+                        style={{ width: "100%" }}
+                        label="会议地址"
+                        field="conferenceUrl"
+                      ></Form.Input>
                     </Row>
                   )}
                   <Row style={{ width: "70%" }}>

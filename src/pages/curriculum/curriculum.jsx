@@ -29,6 +29,8 @@ export class Curriculum extends React.Component {
       activityArray: activityMock,
       userArray: bus.userArray,
       typeArray: bus.activityTypeArray,
+      isCheckedPlace: false,
+      placesArray: bus.places,
     };
     timeChangeEmiiter.addListener("timeChange", this.handleTimeChange);
     const dailyEventStyle = {
@@ -92,6 +94,11 @@ export class Curriculum extends React.Component {
         </Form.Select.Option>
       );
     });
+    const optionPlaces = this.state.placesArray.map((item) => (
+      <Form.Select.Option value={item.id} key={item.id}>
+        {item.name}
+      </Form.Select.Option>
+    ));
     Modal.info({
       title: "添加事件",
       footer: <></>,
@@ -184,6 +191,17 @@ export class Curriculum extends React.Component {
                       />
                     </Col>
                   </Row>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={8} offset={4}>
+                      <Form.Switch
+                        field="isPlace"
+                        label="是否为线下活动"
+                        onChange={(checked) => {
+                          this.setState({ isCheckedPlace: checked });
+                        }}
+                      />
+                    </Col>
+                  </Row>
                   {this.state.isCheckedGroup && (
                     <Row style={{ width: "100%" }}>
                       <Form.Select
@@ -194,6 +212,26 @@ export class Curriculum extends React.Component {
                       >
                         {optionUser}
                       </Form.Select>
+                    </Row>
+                  )}
+                  {this.state.isCheckedPlace && (
+                    <Row style={{ width: "100%" }}>
+                      <Form.Select
+                        style={{ width: "100%" }}
+                        label="地点"
+                        field="placeID"
+                      >
+                        {optionPlaces}
+                      </Form.Select>
+                    </Row>
+                  )}
+                  {!this.state.isCheckedPlace && (
+                    <Row style={{ width: "100%" }}>
+                      <Form.Input
+                        style={{ width: "100%" }}
+                        label="会议地址"
+                        field="conferenceUrl"
+                      ></Form.Input>
                     </Row>
                   )}
                   <Row style={{ width: "70%" }}>
@@ -230,7 +268,11 @@ export class Curriculum extends React.Component {
         </>
       ),
       afterClose: () => {
-        this.setState({ isCheckedCycle: false, isCheckedGroup: false });
+        this.setState({
+          isCheckedCycle: false,
+          isCheckedGroup: false,
+          isCheckedPlace: false,
+        });
       },
     });
   }
