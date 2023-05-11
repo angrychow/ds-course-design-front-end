@@ -8,6 +8,8 @@ import {
   Routes,
   Outlet,
   useLocation,
+  redirect,
+  useNavigate,
 } from "react-router-dom";
 import buptIcon from "./static/bupt-icon.PNG";
 import React, { useEffect, useState } from "react";
@@ -24,6 +26,7 @@ import {
 } from "@douyinfe/semi-icons";
 import { bus } from "./bus";
 import { timeChangeEmiiter } from "./utils/events";
+import { myAxios, setToken } from "./utils/fetch";
 
 const { Header, Footer, Content, Sider } = Layout;
 
@@ -44,12 +47,29 @@ export function App(props) {
       timeChangeEmiiter.emit("timeChange");
     }
   };
+  const navigate = useNavigate();
   var timeChangeInterval = setInterval(timeChangeHandler, 1000);
   useEffect(() => {
+    let token = localStorage["token"];
+    if (
+      (token == null || token == "" || token == undefined) &&
+      bus.embedToken == ""
+    ) {
+      // console.log(123);
+      navigate("/login");
+    } else {
+      bus.embedToken = token;
+      setToken();
+      // debugger;
+      myAxios
+        .post("/user/login", { id: 2021211116, password: "654321" })
+        .then((data) => console.log(data));
+    }
     return function cleanup() {
       clearInterval(timeChangeInterval);
     };
   });
+
   // console.log(location);
   return (
     <Layout

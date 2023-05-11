@@ -1,26 +1,28 @@
 import { Toast } from "@douyinfe/semi-ui";
 import axios from "axios";
+import { bus } from "../bus";
 
 export const myAxios = axios.create({
-  baseURL: "/api/",
-  timeout: 1000,
+  baseURL: "/api",
+  timeout: 5000,
 })
 
 myAxios.interceptors.request.use(
-  (config) => {
+  function(config) {
     // config.data = JSON.stringify(config.data)
     config.headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     };
     return config;
   },
-  (error) => {
+  function(error) {
+    console.log("Error occurs when emitted request");
     return Promise.reject(error);
   }
 )
 
 myAxios.interceptors.response.use(
-  (response) => {
+  function(response){
     if (response.data) {
       return response.data
     } else {
@@ -28,9 +30,31 @@ myAxios.interceptors.response.use(
       return Promise.reject(response);
     }
   },
-  (error) => {
+  function(error) {
     console.log(error);
     Toast.error("An Error Occur "+error);
     return Promise.reject(error);
   }
 )
+
+export const setToken = () => {
+  console.log('set');
+  myAxios.interceptors.request.use(
+    function (config) {
+      console.log('called');
+      // config.data = JSON.stringify(config.data)
+      // config.headers = {
+      //   "Content-Type": "application/json",
+      //   "Authorization": "Bearer "+ bus.embedToken
+      // };
+      // config.headers.Authorization = 'Bearer ' + bus.embedToken;
+      config.headers['Authorization'] = 'Bearer ' + bus.embedToken;
+      // config.headers['User-Agent'] = '123123123';
+      return config;
+    },
+    function(error) {
+      console.log("Error occurs when emitted request");
+      return Promise.reject(error);
+    }
+  )
+}

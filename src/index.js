@@ -46,7 +46,7 @@ root.render(
   
 );
 
-myAxios.get('/ping').then((data) => {
+myAxios.get('/').then((data) => {
   console.log(data);
 })
 

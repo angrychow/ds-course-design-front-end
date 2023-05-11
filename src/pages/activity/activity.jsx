@@ -165,7 +165,7 @@ export class ActivityManage extends React.Component {
                         onChange={(checked) => {
                           this.setState({ isCheckedCycle: checked });
                         }}
-                        disabled={findActivity}
+                        disabled={findActivity != undefined}
                       />
                     </Col>
                     <Col span={8} offset={4}>
@@ -175,7 +175,7 @@ export class ActivityManage extends React.Component {
                         onChange={(checked) => {
                           this.setState({ isCheckedGroup: checked });
                         }}
-                        disabled={findActivity}
+                        disabled={findActivity != undefined}
                       />
                     </Col>
                   </Row>

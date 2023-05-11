@@ -2,6 +2,7 @@
   "name": "front",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@douyinfe/semi-icons": "^2.31.0",
     "@douyinfe/semi-illustrations": "^2.32.0",
