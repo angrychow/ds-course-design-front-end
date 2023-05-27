@@ -106,7 +106,7 @@ export function Login(props) {
                         })
                         .then((data) => {
                           console.log(data);
-                          if (data.contains("Success")) {
+                          if (data.search(/Success/g) != -1) {
                             Toast.success("成功注册：" + data);
                           } else {
                             Toast.error("注册失败：" + data);

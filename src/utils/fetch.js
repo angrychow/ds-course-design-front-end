@@ -2,16 +2,21 @@ import { Toast } from "@douyinfe/semi-ui";
 import axios from "axios";
 import { bus } from "../bus";
 
+var interceptors;
+
 export const myAxios = axios.create({
   baseURL: "/api",
   timeout: 5000,
 })
+
+
 
 myAxios.interceptors.request.use(
   function(config) {
     // config.data = JSON.stringify(config.data)
     config.headers = {
       "Content-Type": "application/json",
+      "Authorization":"123",
     };
     return config;
   },
@@ -21,8 +26,8 @@ myAxios.interceptors.request.use(
   }
 )
 
-myAxios.interceptors.response.use(
-  function(response){
+interceptors = myAxios.interceptors.response.use(
+  function (response) {
     if (response.data) {
       return response.data
     } else {
@@ -39,8 +44,12 @@ myAxios.interceptors.response.use(
 
 export const setToken = () => {
   console.log('set');
-  myAxios.interceptors.request.use(
+  myAxios.interceptors.request.eject(interceptors);
+  interceptors = myAxios.interceptors.request.use(
     function (config) {
+       config.headers = {
+      "Content-Type": "application/json",
+    };
       console.log('called');
       // config.data = JSON.stringify(config.data)
       // config.headers = {

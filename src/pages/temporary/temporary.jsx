@@ -1,9 +1,20 @@
-import { IconClock, IconMapPin } from "@douyinfe/semi-icons";
+import { IconSearch, IconClock, IconMapPin } from "@douyinfe/semi-icons";
 import { IllustrationNoContent } from "@douyinfe/semi-illustrations";
-import { Button, Card, Empty, Row, Form, Modal, Col } from "@douyinfe/semi-ui";
+import {
+  Button,
+  Card,
+  Empty,
+  Row,
+  Form,
+  Modal,
+  Col,
+  Select,
+  Input,
+} from "@douyinfe/semi-ui";
 import React from "react";
 import { mockActivityData } from "./temporary-mock";
 import { bus } from "../../bus";
+import "./temporary.css";
 
 export class Temporary extends React.Component {
   constructor(props) {
@@ -281,24 +292,48 @@ export class Temporary extends React.Component {
             overflowY: "scroll",
           }}
         >
-          <Row
+          <div
             style={{
               width: "100%",
               height: "70px",
+              display: "flex",
+              flexFlow: "row",
+              alignItems: "center",
             }}
           >
             <Button
               theme="solid"
               type="primary"
+              onClick={() => handleAdd()}
               style={{
-                marginLeft: "50px",
-                marginTop: "20px",
+                marginLeft: "20px",
               }}
-              onClick={() => this.handleAdd()}
             >
-              添加临时任务
+              添加活动
             </Button>
-          </Row>
+            <Select
+              style={{
+                marginLeft: "20px",
+              }}
+              defaultValue={"title"}
+            >
+              <Select.Option value="title">事件名称</Select.Option>
+              <Select.Option value="placeID">地点名</Select.Option>
+              <Select.Option value="time">时间</Select.Option>
+            </Select>
+            <Input
+              suffix={
+                <IconSearch
+                  className="IconSearch"
+                  onClick={() => {
+                    console.log("Test");
+                  }}
+                />
+              }
+              placeholder="多关键词搜索"
+              style={{ marginLeft: "10px", width: "calc(40% - 80px)" }}
+            />
+          </div>
           <Row
             style={{
               display: "flex",

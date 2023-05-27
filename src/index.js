@@ -15,6 +15,9 @@ import { myAxios } from './utils/fetch';
 import { Login } from './pages/login/login';
 import { Temporary } from './pages/temporary/temporary';
 import { ActivityManage } from './pages/activity/activity';
+import { CourseManage } from './pages/course/course';
+import { PersonManage } from './pages/person/person';
+import { Terminal } from './pages/log/log';
 
 const router = createHashRouter([
   {
@@ -32,6 +35,15 @@ const router = createHashRouter([
       }, {
       path: 'activity',
       element: <ActivityManage/>
+      }, {
+      path: 'course',
+      element: <CourseManage />
+      }, {
+      path: 'person',
+      element: <PersonManage/>
+      }, {
+      path: "log",
+        element:<Terminal />
     }]
   },
   {

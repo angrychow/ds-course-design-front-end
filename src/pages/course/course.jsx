@@ -21,10 +21,12 @@ import {
 import React, { useState } from "react";
 import { activityMock } from "./activity-mock";
 import { bus } from "../../bus";
-import "./activity.css";
+import "./course.css";
 
-export function ActivityManage() {
-  const [activityArray, setActivityArray] = useState(activityMock);
+export function CourseManage() {
+  const [activityArray, setActivityArray] = useState(
+    activityMock.filter((item) => item.activityType == 0)
+  );
   const typeArray = bus.activityTypeArray;
   const places = bus.places;
   const userArray = bus.userArray;

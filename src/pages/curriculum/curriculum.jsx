@@ -12,6 +12,7 @@ import "./curriculum.css";
 import { bus } from "../../bus";
 import { timeChangeEmiiter } from "../../utils/events";
 import { activityMock } from "./activity-mock";
+import { myAxios } from "../../utils/fetch";
 
 export class Curriculum extends React.Component {
   constructor(props) {
@@ -80,21 +81,21 @@ export class Curriculum extends React.Component {
         </Form.Select.Option>
       );
     }
-    const optionUser = this.state.userArray.map((item) => {
+    const optionUser = bus.userArray.map((item) => {
       return (
         <Form.Select.Option value={item.id} key={item.id}>
           {item.name}
         </Form.Select.Option>
       );
     });
-    const optionType = this.state.typeArray.map((item) => {
+    const optionType = bus.activityTypeArray.map((item) => {
       return (
         <Form.Select.Option value={item.id} key={item.id}>
           {item.name}
         </Form.Select.Option>
       );
     });
-    const optionPlaces = this.state.placesArray.map((item) => (
+    const optionPlaces = bus.places.map((item) => (
       <Form.Select.Option value={item.id} key={item.id}>
         {item.name}
       </Form.Select.Option>
@@ -133,7 +134,25 @@ export class Curriculum extends React.Component {
                 // Toast.info({
                 //   opts: values.toString(),
                 // });
-                console.log(values);
+                // console.log(values);
+                const nowDate = new Date(
+                  values.activityDate.getFullYear() +
+                    "-" +
+                    (values.activityDate.getMonth() + 1) +
+                    "-" +
+                    values.activityDate.getDate()
+                );
+                let postValue = {
+                  ...values,
+                  start: nowDate.getTime() + 1000 * 60 * 60 * values.startHour,
+                  end: nowDate.getTime() + 1000 * 60 * 60 * values.endHour,
+                  title: values.activityName,
+                  text: values.activityName,
+                };
+                console.log(postValue);
+                myAxios.post("/event/activity", postValue).then((data) => {
+                  console.log(data);
+                });
               }}
             >
               {(formState, value, formAPI) => (
@@ -208,7 +227,7 @@ export class Curriculum extends React.Component {
                         multiple={true}
                         style={{ width: "100%" }}
                         label="参与群体人员"
-                        field="groupSelect"
+                        field="groupArray"
                       >
                         {optionUser}
                       </Form.Select>

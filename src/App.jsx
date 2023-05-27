@@ -12,7 +12,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import buptIcon from "./static/bupt-icon.PNG";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   IconUserCircle,
   IconBackward,
@@ -23,6 +23,9 @@ import {
   IconPaperclip,
   IconMapPin,
   IconArchive,
+  IconUserGroup,
+  IconMark,
+  IconOption,
 } from "@douyinfe/semi-icons";
 import { bus } from "./bus";
 import { timeChangeEmiiter } from "./utils/events";
@@ -33,6 +36,7 @@ const { Header, Footer, Content, Sider } = Layout;
 export function App(props) {
   const [timeState, setTimeState] = useState(bus.timeState);
   const [date, setDate] = useState(bus.date);
+  const [isAdmin, setIsAdmin] = useState(bus.isAdmin);
   const location = useLocation();
   const timeChangeHandler = () => {
     if (timeState == "forward") {
@@ -50,6 +54,11 @@ export function App(props) {
   const navigate = useNavigate();
   var timeChangeInterval = setInterval(timeChangeHandler, 1000);
   useEffect(() => {
+    return function cleanup() {
+      clearInterval(timeChangeInterval);
+    };
+  });
+  useEffect(() => {
     let token = localStorage["token"];
     if (
       (token == null || token == "" || token == undefined) &&
@@ -61,16 +70,88 @@ export function App(props) {
       bus.embedToken = token;
       setToken();
       // debugger;
-      myAxios
-        .post("/user/login", { id: 2021211116, password: "654321" })
-        .then((data) => console.log(data));
+      myAxios.get("/user/verify").then((data) => {
+        console.log(data.is_admin);
+        bus.isAdmin = data.is_admin == 0 ? false : true;
+        console.log(bus.isAdmin);
+        setIsAdmin(bus.isAdmin);
+      });
+      myAxios.get("/user/").then((data) => {
+        console.log(data);
+        bus.userArray = data.users;
+      });
+      myAxios.get("/map/place").then((data) => {
+        console.log(data);
+        bus.places = data.nodes;
+      });
     }
-    return function cleanup() {
-      clearInterval(timeChangeInterval);
-    };
-  });
+  }, []);
 
   // console.log(location);
+
+  const navList = useMemo(() => {
+    console.log(isAdmin);
+    return isAdmin
+      ? [
+          {
+            itemKey: "curriculum",
+            text: "课程表",
+            icon: <IconUser />,
+          },
+          {
+            itemKey: "navigate",
+            text: "地图导航",
+            icon: <IconMapPin />,
+          },
+          {
+            itemKey: "temporary",
+            text: "临时事务管理",
+            icon: <IconPaperclip />,
+          },
+          {
+            itemKey: "activity",
+            text: "事件管理",
+            icon: <IconArchive />,
+          },
+          {
+            itemKey: "person",
+            text: "人员管理",
+            icon: <IconUserGroup />,
+          },
+          {
+            itemKey: "course",
+            text: "课程管理",
+            icon: <IconMark />,
+          },
+          {
+            itemKey: "log",
+            text: "日志",
+            icon: <IconOption />,
+          },
+        ]
+      : [
+          {
+            itemKey: "curriculum",
+            text: "课程表",
+            icon: <IconUser />,
+          },
+          {
+            itemKey: "navigate",
+            text: "地图导航",
+            icon: <IconMapPin />,
+          },
+          {
+            itemKey: "temporary",
+            text: "临时事务管理",
+            icon: <IconPaperclip />,
+          },
+          {
+            itemKey: "activity",
+            text: "事件管理",
+            icon: <IconArchive />,
+          },
+        ];
+  }, [isAdmin]);
   return (
     <Layout
       style={{
@@ -229,6 +310,9 @@ export function App(props) {
                 navigate: "/navigate",
                 temporary: "/temporary",
                 activity: "/activity",
+                course: "/course",
+                person: "/person",
+                log: "/log",
               };
               return (
                 <Link
@@ -241,20 +325,7 @@ export function App(props) {
             }}
             style={{ height: "100%" }}
             bodyStyle={{ height: "100%" }}
-            items={[
-              { itemKey: "curriculum", text: "课程表", icon: <IconUser /> },
-              { itemKey: "navigate", text: "地图导航", icon: <IconMapPin /> },
-              {
-                itemKey: "temporary",
-                text: "临时事务管理",
-                icon: <IconPaperclip />,
-              },
-              {
-                itemKey: "activity",
-                text: "事件管理",
-                icon: <IconArchive />,
-              },
-            ]}
+            items={navList}
             // onSelect={(data) => console.log("trigger onSelect: ", data)}
             // onClick={(data) => console.log("trigger onClick: ", data)}
             defaultSelectedKeys={location.pathname.split("/")}

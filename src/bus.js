@@ -6,25 +6,31 @@ export const bus = {
   places: [
     {
       id: 1,
-      name: '主楼 902'
+      name: '主楼 902',
+      x: 114,
+      y: 514,
     },
     {
       id: 2,
-      name: '学生发展中心'
+      name: '学生发展中心',
+      x: 191,
+      y: 810,
     },
     {
       id: 3,
-      name: '学五 1314'
+      name: '学五 1314',
+      x: 114,
+      y: 514,
     }
   ],
   activityTypeArray: [
     {
-      id: 1,
-      name:"类型1",
+      id: 0,
+      name:"课程",
     },
     {
-      id: 2,
-      name:"类型2",
+      id: 1,
+      name:"事件",
     },
   ],
   tempTypeArray: [
@@ -46,8 +52,9 @@ export const bus = {
     },
   ],
   userArray: [
-    { name: "安戈瑞抽", id: "2021211116" },
-    { name: "法五五五", id: "2021211110" },
-    { name: "Octopus", id: "2021211111" },
+    { name: "安戈瑞抽", id: "2021211116",is_admin:1 },
+    { name: "法五五五", id: "2021211110",is_admin:1 },
+    { name: "Octopus", id: "2021211111",is_admin:1 },
   ],
+  isAdmin: true,
 }

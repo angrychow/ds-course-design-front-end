@@ -3,7 +3,6 @@ import {
   IconDelete,
   IconMapPin,
   IconWrench,
-  IconSearch,
 } from "@douyinfe/semi-icons";
 import { IllustrationNoContent } from "@douyinfe/semi-illustrations";
 import {
@@ -15,19 +14,16 @@ import {
   Modal,
   Col,
   Table,
-  Select,
-  Input,
 } from "@douyinfe/semi-ui";
 import React, { useState } from "react";
-import { activityMock } from "./activity-mock";
 import { bus } from "../../bus";
-import "./activity.css";
 
-export function ActivityManage() {
-  const [activityArray, setActivityArray] = useState(activityMock);
+export function PersonManage() {
+  const [activityArray, setActivityArray] = useState([]);
   const typeArray = bus.activityTypeArray;
   const places = bus.places;
-  const userArray = bus.userArray;
+  // const userArray = bus.userArray;
+  const [userArray, setUserArray] = useState(bus.userArray);
   const [isCheckedCycle, setCheckedCycle] = useState(false);
   const [isCheckedGroup, setCheckedGroup] = useState(false);
   const [isCheckedPlace, setCheckedPlace] = useState(false);
@@ -262,42 +258,17 @@ export function ActivityManage() {
 
   const column = [
     {
-      title: "事件名称",
+      title: "用户名称",
       dataIndex: "name",
     },
     {
-      title: "时间",
-      dataIndex: "time",
-      render: (text, record, index) => (
-        <div>
-          {record.start.getMonth() +
-            1 +
-            "月" +
-            record.start.getDate() +
-            "日 " +
-            record.start.getHours() +
-            "时-" +
-            record.end.getHours() +
-            "时"}
-        </div>
-      ),
+      title: "用户 id",
+      dataIndex: "id",
     },
     {
-      title: "地点或 URL",
-      dataIndex: "place",
-      width: 500,
-      render: (text, record, index) => (
-        <div
-          style={{
-            overflowWrap: "break-word",
-            maxWidth: "500px",
-          }}
-        >
-          {record.isPlace
-            ? places.find((item) => item.id == record.placeID).name
-            : record.conferenceUrl}
-        </div>
-      ),
+      title: "是否为管理员",
+      dataIndex: "is_admin",
+      render: (text, record, index) => <div>{text == 1 ? "是" : "否"}</div>,
     },
     {
       title: "修改",
@@ -309,8 +280,8 @@ export function ActivityManage() {
             icon={<IconWrench />}
             theme="borderless"
             onClick={() => {
-              console.log(record.id);
-              handleClick(record.id);
+              // console.log(record.id);
+              // handleClick(record.id);
             }}
           />
         </div>
@@ -342,28 +313,14 @@ export function ActivityManage() {
     >
       <Empty
         image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
-        title="您现在没有活动哦 ~"
+        title="系统中目前还没有用户哦 ~"
         style={{
           display: "flex",
           flexFlow: "column",
           placeContent: "center",
           placeItems: "center",
         }}
-      >
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexFlow: "column",
-            placeContent: "center",
-            placeItems: "center",
-          }}
-        >
-          <Button theme="solid" type="primary" onClick={() => handleAdd()}>
-            添加活动
-          </Button>
-        </div>
-      </Empty>
+      ></Empty>
       <Modal
         visible={showModal}
         title="添加事件"
@@ -379,7 +336,7 @@ export function ActivityManage() {
       </Modal>
     </div>
   );
-  let haveTempEvent = activityArray.length > 0;
+  let haveTempEvent = userArray.length > 0;
   let haveActivity;
   if (haveTempEvent) {
     haveActivity = (
@@ -387,55 +344,14 @@ export function ActivityManage() {
         style={{
           width: "100%",
           overflowY: "hidden",
+          marginTop: "30px",
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            height: "70px",
-            display: "flex",
-            flexFlow: "row",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            theme="solid"
-            type="primary"
-            onClick={() => handleAdd()}
-            style={{
-              marginLeft: "20px",
-            }}
-          >
-            添加活动
-          </Button>
-          <Select
-            style={{
-              marginLeft: "20px",
-            }}
-            defaultValue={"title"}
-          >
-            <Select.Option value="title">事件名称</Select.Option>
-            <Select.Option value="placeID">地点名</Select.Option>
-            <Select.Option value="time">时间</Select.Option>
-          </Select>
-          <Input
-            suffix={
-              <IconSearch
-                className="IconSearch"
-                onClick={() => {
-                  console.log("Test");
-                }}
-              />
-            }
-            placeholder="多关键词搜索"
-            style={{ marginLeft: "10px", width: "calc(40% - 80px)" }}
-          />
-        </div>
         <Row style={{ width: "100%", height: "calc(100% - 200px)" }}>
           <Table
             columns={column}
-            dataSource={activityArray}
-            pagination={{ pageSize: 8 }}
+            dataSource={userArray}
+            pagination={{ pageSize: 9 }}
           />
         </Row>
         <Modal
