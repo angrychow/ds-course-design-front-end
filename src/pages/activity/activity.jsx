@@ -22,6 +22,7 @@ import React, { useState } from "react";
 import { activityMock } from "./activity-mock";
 import { bus } from "../../bus";
 import "./activity.css";
+import { myAxios } from "../../utils/fetch";
 
 export function ActivityManage() {
   const [activityArray, setActivityArray] = useState(activityMock);
@@ -34,7 +35,9 @@ export function ActivityManage() {
   const [showModal, setShowModal] = useState(false);
   const [initData, setInitData] = useState({});
   var findActivity = null;
-
+  const getNewData = () => {
+    // myAxios.get('/event/activity/all')
+  };
   function handleAdd() {
     handleClick(-1);
   }

@@ -1,5 +1,6 @@
 
 export const bus = {
+  id: 2021211116,
   embedToken: '',
   date: new Date("2023-03-25 23:50:00"),
   timeState: 'pause',
@@ -26,35 +27,35 @@ export const bus = {
   activityTypeArray: [
     {
       id: 0,
-      name:"课程",
+      name: "课程",
     },
     {
       id: 1,
-      name:"事件",
+      name: "事件",
     },
   ],
   tempTypeArray: [
     {
       id: 1,
-      name:"电竞",
+      name: "电竞",
     },
     {
       id: 2,
-      name:"八卦",
+      name: "八卦",
     },
     {
       id: 3,
-      name:"桌游",
+      name: "桌游",
     },
     {
       id: 4,
-      name:"聚餐",
+      name: "聚餐",
     },
   ],
   userArray: [
-    { name: "安戈瑞抽", id: "2021211116",is_admin:1 },
-    { name: "法五五五", id: "2021211110",is_admin:1 },
-    { name: "Octopus", id: "2021211111",is_admin:1 },
+    { name: "安戈瑞抽", id: "2021211116", is_admin: 1 },
+    { name: "法五五五", id: "2021211110", is_admin: 1 },
+    { name: "Octopus", id: "2021211111", is_admin: 1 },
   ],
   isAdmin: true,
 }

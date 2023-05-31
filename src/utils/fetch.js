@@ -6,21 +6,21 @@ var interceptors;
 
 export const myAxios = axios.create({
   baseURL: "/api",
-  timeout: 5000,
+  timeout: 10000,
 })
 
 
 
 myAxios.interceptors.request.use(
-  function(config) {
+  function (config) {
     // config.data = JSON.stringify(config.data)
     config.headers = {
       "Content-Type": "application/json",
-      "Authorization":"123",
+      "Authorization": "123",
     };
     return config;
   },
-  function(error) {
+  function (error) {
     console.log("Error occurs when emitted request");
     return Promise.reject(error);
   }
@@ -35,9 +35,9 @@ interceptors = myAxios.interceptors.response.use(
       return Promise.reject(response);
     }
   },
-  function(error) {
+  function (error) {
     console.log(error);
-    Toast.error("An Error Occur "+error);
+    Toast.error("An Error Occur " + error);
     return Promise.reject(error);
   }
 )
@@ -47,9 +47,9 @@ export const setToken = () => {
   myAxios.interceptors.request.eject(interceptors);
   interceptors = myAxios.interceptors.request.use(
     function (config) {
-       config.headers = {
-      "Content-Type": "application/json",
-    };
+      config.headers = {
+        "Content-Type": "application/json",
+      };
       console.log('called');
       // config.data = JSON.stringify(config.data)
       // config.headers = {
@@ -61,7 +61,7 @@ export const setToken = () => {
       // config.headers['User-Agent'] = '123123123';
       return config;
     },
-    function(error) {
+    function (error) {
       console.log("Error occurs when emitted request");
       return Promise.reject(error);
     }

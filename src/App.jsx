@@ -30,6 +30,7 @@ import {
 import { bus } from "./bus";
 import { timeChangeEmiiter } from "./utils/events";
 import { myAxios, setToken } from "./utils/fetch";
+import { useUserData } from "./utils/useUserData";
 
 const { Header, Footer, Content, Sider } = Layout;
 
@@ -52,6 +53,7 @@ export function App(props) {
     }
   };
   const navigate = useNavigate();
+  const [userData, setUserData] = useUserData();
   var timeChangeInterval = setInterval(timeChangeHandler, 1000);
   useEffect(() => {
     return function cleanup() {
@@ -71,10 +73,15 @@ export function App(props) {
       setToken();
       // debugger;
       myAxios.get("/user/verify").then((data) => {
-        console.log(data.is_admin);
+        console.log(data);
         bus.isAdmin = data.is_admin == 0 ? false : true;
-        console.log(bus.isAdmin);
         setIsAdmin(bus.isAdmin);
+        setUserData({
+          name: data.name,
+          id: data.id,
+          isAdmin: data.is_admin == 0 ? false : true,
+        });
+        bus.id = data.id;
       });
       myAxios.get("/user/").then((data) => {
         console.log(data);
@@ -287,7 +294,7 @@ export function App(props) {
           >
             <IconUserCircle style={{ fontSize: "32px" }} />
             <div style={{ fontSize: "28px", marginLeft: "10px" }}>
-              {props.username ? props.username : "Angrychow"}
+              {userData.name}
             </div>
           </Col>
         </Row>
