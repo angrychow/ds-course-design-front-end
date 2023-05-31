@@ -96,10 +96,34 @@ export class Curriculum extends React.Component {
           return hasId;
         });
         if (!filterData) filterData = [];
+        const cycleEvent = [];
+        for (let item of filterData) {
+          if (item.cycleType != 0) {
+            for (let i = -16; i < 0; i++) {
+              const cycleItem = {
+                ...item,
+                start: item.start + i * 604800,
+                end: item.end + i * 604800,
+              };
+              cycleEvent.push(cycleItem);
+            }
+
+            for (let i = 1; i < 17; i++) {
+              const cycleItem = {
+                ...item,
+                start: item.start + i * 604800,
+                end: item.end + i * 604800,
+              };
+              cycleEvent.push(cycleItem);
+            }
+          }
+        }
+        filterData = filterData.concat(cycleEvent);
+        console.log(filterData);
         this.setState({
           events: filterData.map((item) => {
             return {
-              key: Number.toString(item.id),
+              key: Number.toString(item.id + item.start),
               start: new Date(item.start * 1000),
               end: new Date(item.end * 1000),
               text: item.text,

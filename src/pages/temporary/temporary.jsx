@@ -33,6 +33,7 @@ export class Temporary extends React.Component {
   handleClick(index) {
     console.log(index);
     const optionTimeSelect = [];
+    console.log(this.state.temporaryActivityArray);
     const findEvent = this.state.temporaryActivityArray.find(
       (item) => item.id == index
     );
@@ -54,7 +55,9 @@ export class Temporary extends React.Component {
           ).id,
           activityPlace: this.state.places.find(
             (item) => item.name == findEvent.place
-          ).id,
+          )
+            ? this.state.places.find((item) => item.name == findEvent.place).id
+            : undefined,
           activityName: findEvent.name,
           startHour: startHour,
         }
@@ -304,7 +307,9 @@ export class Temporary extends React.Component {
             <Button
               theme="solid"
               type="primary"
-              onClick={() => handleAdd()}
+              onClick={() => {
+                this.handleAdd();
+              }}
               style={{
                 marginLeft: "20px",
               }}
