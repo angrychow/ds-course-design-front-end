@@ -355,10 +355,17 @@ export function Temporary() {
             maxWidth: "500px",
           }}
         >
-          {record.isPlace
-            ? // ? places.find((item) => item.id == record.placeID).name
-              record.placeID
-            : record.conferenceUrl}
+          {(() => {
+            if (record.isPlace) {
+              if (places.find((item) => item.id == record.placeID)) {
+                return places.find((item) => item.id == record.placeID).name;
+              } else {
+                return record.placeID;
+              }
+            } else {
+              return record.conferenceUrl;
+            }
+          })()}
         </div>
       ),
     },

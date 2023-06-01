@@ -41,11 +41,12 @@ export function App(props) {
   const location = useLocation();
   const timeChangeHandler = () => {
     if (timeState == "forward") {
-      let timeStamp = date.getTime() + 1000 * 60 * 10;
+      let timeStamp = date.getTime() + 1000 * 60 * 30;
       for (let item of bus.activityArray) {
         if (
           item.start * 1000 - bus.date.getTime() <= 1000 * 60 * 60 &&
-          item.start * 1000 - bus.date.getTime() >= 1000 * 60 * 40
+          item.start * 1000 - bus.date.getTime() >= 1000 * 60 * 30 &&
+          item.alert
         ) {
           Toast.info(item.title + "快要开始了！");
           // console.log(item);
