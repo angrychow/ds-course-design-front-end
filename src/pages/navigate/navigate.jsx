@@ -16,6 +16,7 @@ export class NavigateActivity extends React.Component {
     this.state = {
       placeArray: ["placeholder"],
       isLoadMap: false,
+      navNum: 2,
       pathArray: [
         {
           time: "2019-07-14 10:35",
@@ -43,7 +44,6 @@ export class NavigateActivity extends React.Component {
         },
       ],
 
-      
       mapOption: {
         title: {
           text: "导航路线",
@@ -184,6 +184,45 @@ export class NavigateActivity extends React.Component {
                 <>
                   <Row>
                     <Col span={12}>
+                      {/* 设置一个开始导航的按钮和一个输入数字的框用来选择有几个途径点 */}
+                      <Form.InputNumber
+                        field="num"
+                        label="导航点个数"
+                        style={{
+                          width: "90%",
+                        }}
+                        min={0}
+                        max={this.state.placeArray.length}
+                        defaultValue={2}
+                        onChange={(value) => {
+                          this.setState((prev) => {
+                            prev.navNum = value;
+                            return prev;
+                          });
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                  {/* 按照navNum简历对应数量的地点选择框 */}
+                  {Array.from({ length: this.state.navNum }, (_, i) => i + 1).map((item) => {
+                    return (
+                      <Row>
+                        <Col span={12}>
+                          <Form.Select
+                            field={`place${item}`}
+                            label={`途径地点${item}`}
+                            style={{
+                              width: "90%",
+                            }}
+                          >
+                            {optionJSX}
+                          </Form.Select>
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                  {/* <Row>
+                    <Col span={12}>
                       <Form.Select
                         field="startPlace"
                         label="出发地点"
@@ -206,7 +245,7 @@ export class NavigateActivity extends React.Component {
                         {optionJSX}
                       </Form.Select>
                     </Col>
-                  </Row>
+                  </Row> */}
                   <Row>
                     <Button
                       theme="solid"
@@ -217,11 +256,16 @@ export class NavigateActivity extends React.Component {
                       htmlType="submit"
                       onClick={() => {
                         console.log(formState.values);
-                        myAxios.post("/map/navigate", formState.values,
-                        {params: Object.values(formState.values).reduce((acc, cur) => {
-                          acc["nodes"].push(cur.id);
-                          return acc;
-                        },{"nodes":[]})})
+                        myAxios
+                          .post("/map/navigate", formState.values, {
+                            params: Object.values(formState.values).reduce(
+                              (acc, cur) => {
+                                acc["nodes"].push(cur.id);
+                                return acc;
+                              },
+                              { nodes: [] }
+                            ),
+                          })
                           .then((data) => {
                             console.log(data);
                           });
