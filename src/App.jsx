@@ -82,17 +82,23 @@ export function App(props) {
       bus.embedToken = token;
       setToken();
       // debugger;
-      myAxios.get("/user/verify").then((data) => {
-        console.log(data);
-        bus.isAdmin = data.is_admin == 0 ? false : true;
-        setIsAdmin(bus.isAdmin);
-        setUserData({
-          name: data.name,
-          id: data.id,
-          isAdmin: data.is_admin == 0 ? false : true,
+      myAxios
+        .get("/user/verify")
+        .then((data) => {
+          console.log(data);
+          bus.isAdmin = data.is_admin == 0 ? false : true;
+          setIsAdmin(bus.isAdmin);
+          setUserData({
+            name: data.name,
+            id: data.id,
+            isAdmin: data.is_admin == 0 ? false : true,
+          });
+          bus.id = data.id;
+        })
+        .catch((err) => {
+          delete localStorage["token"];
+          navigate("/login");
         });
-        bus.id = data.id;
-      });
       myAxios.get("/user/").then((data) => {
         console.log(data);
         bus.userArray = data.users;
