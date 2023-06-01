@@ -1,9 +1,11 @@
-import * as echarts from "echarts";
+impot * as echarts from "echarts";
 import ReactCharts from "echarts-for-react";
 import mapBUPT from "../../static/map.svg";
 import React from "react";
 import { Form, Row, Col, Button, Timeline } from "@douyinfe/semi-ui";
 import "./navigate.css";
+import { bus } from "../../bus";
+import { myAxios } from "../../utils/fetch";
 
 // echarts.registerMap("北邮地图", { svg: mapBUPT });
 
@@ -40,6 +42,8 @@ export class NavigateActivity extends React.Component {
           type: "success",
         },
       ],
+
+      
       mapOption: {
         title: {
           text: "导航路线",
@@ -90,7 +94,7 @@ export class NavigateActivity extends React.Component {
             data: [
               {
                 coords: [
-                  [100, 100],
+                  [1000, 100],
                   [100, 150],
                   [150, 150],
                   [150, 100],
@@ -117,7 +121,7 @@ export class NavigateActivity extends React.Component {
   }
   componentDidMount() {
     this.setState({
-      placeArray: ["place A", "place B", "place C", "place D", "place E"],
+      placeArray: bus.places,
     });
     fetch(mapBUPT)
       .then((resp) => resp.text())
@@ -129,8 +133,8 @@ export class NavigateActivity extends React.Component {
   render() {
     const optionJSX = this.state.placeArray.map((item) => {
       return (
-        <Form.Select.Option value={item} key={item}>
-          {item}
+        <Form.Select.Option value={item} key={item.id}>
+          {item.name}
         </Form.Select.Option>
       );
     });
@@ -155,7 +159,7 @@ export class NavigateActivity extends React.Component {
         >
           {this.state.isLoadMap && (
             <ReactCharts
-              style={{ height: "85%", width: "60%" }}
+              style={{ height: "125%", width: "80%" }}
               option={this.state.mapOption}
             />
           )}
@@ -211,6 +215,17 @@ export class NavigateActivity extends React.Component {
                         width: "70px",
                       }}
                       htmlType="submit"
+                      onClick={() => {
+                        console.log(formState.values);
+                        myAxios.post("/map/navigate", formState.values,
+                        {params: Object.values(formState.values).reduce((acc, cur) => {
+                          acc["nodes"].push(cur.id);
+                          return acc;
+                        },{"nodes":[]})})
+                          .then((data) => {
+                            console.log(data);
+                          });
+                      }}
                     >
                       查询
                     </Button>
