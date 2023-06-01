@@ -1,4 +1,10 @@
-import { IconSearch, IconClock, IconMapPin } from "@douyinfe/semi-icons";
+import {
+  IconClock,
+  IconDelete,
+  IconMapPin,
+  IconWrench,
+  IconSearch,
+} from "@douyinfe/semi-icons";
 import { IllustrationNoContent } from "@douyinfe/semi-illustrations";
 import {
   Button,
@@ -8,351 +14,532 @@ import {
   Form,
   Modal,
   Col,
+  Table,
   Select,
   Input,
+  Toast,
 } from "@douyinfe/semi-ui";
-import React from "react";
-import { mockActivityData } from "./temporary-mock";
+import React, { useEffect, useRef, useState } from "react";
+import { activityMock } from "./temporary-mock";
 import { bus } from "../../bus";
 import "./temporary.css";
+import { myAxios } from "../../utils/fetch";
 
-export class Temporary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      temporaryActivityArray: mockActivityData,
-      typeArray: bus.tempTypeArray,
-      places: bus.places,
-    };
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleAdd() {
-    this.handleClick(-1);
-  }
-  handleClick(index) {
-    console.log(index);
-    const optionTimeSelect = [];
-    console.log(this.state.temporaryActivityArray);
-    const findEvent = this.state.temporaryActivityArray.find(
-      (item) => item.id == index
-    );
-    // console.log(findEvent);
-    let startHour = 6;
-    if (findEvent) {
-      if (findEvent.time.getHours() >= 22) {
-        startHour = 22;
-      } else if (findEvent.time.getHours() >= 6) {
-        startHour = findEvent.time.getHours();
+export function Temporary() {
+  const [activityArray, setActivityArray] = useState(activityMock);
+  const [filteredArray, setFilteredArray] = useState(activityMock);
+  const typeArray = bus.activityTypeArray;
+  const places = bus.places;
+  const userArray = bus.userArray;
+  const [isCheckedCycle, setCheckedCycle] = useState(false);
+  const [isCheckedGroup, setCheckedGroup] = useState(false);
+  const [isCheckedPlace, setCheckedPlace] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [initData, setInitData] = useState({});
+  const nowChoice = useRef("title");
+  const nowText = useRef("");
+  var findActivity = null;
+  const getNewData = () => {
+    myAxios.get("/event/activity/all").then((data) => {
+      console.log(data.activities);
+      data.activities = data.activities.map((item) => {
+        const _item = { ...item };
+        _item.start = new Date(item.start * 1000);
+        _item.end = new Date(item.end * 1000);
+        _item.name = item.title;
+        return _item;
+      });
+      data.activities = data.activities.filter((item) => {
+        return item.activityType == 2;
+      });
+      if (bus.isAdmin) {
+        setActivityArray(data.activities);
+        setFilteredArray(data.activities);
+      } else {
+        var filterData = data.activities.filter((item) => {
+          let hasId = false;
+          for (let i of item.groupArray) {
+            if (i == bus.id) {
+              hasId = true;
+              break;
+            }
+          }
+          return hasId;
+        });
+        if (!filterData) filterData = [];
+        setActivityArray(filterData);
+        setFilteredArray(filterData);
       }
-    }
-
-    const initVal = findEvent
-      ? {
-          activityDate: findEvent.time,
-          activityType: this.state.typeArray.find(
-            (item) => item.name == findEvent.type
-          ).id,
-          activityPlace: this.state.places.find(
-            (item) => item.name == findEvent.place
-          )
-            ? this.state.places.find((item) => item.name == findEvent.place).id
-            : undefined,
-          activityName: findEvent.name,
-          startHour: startHour,
-        }
-      : {};
-    console.log(initVal);
-    for (let i = 6; i <= 22; i++) {
-      optionTimeSelect.push(
-        <Form.Select.Option value={i} key={i}>
-          {i} 点
-        </Form.Select.Option>
-      );
-    }
-    const optionType = this.state.typeArray.map((item) => {
-      return (
-        <Form.Select.Option value={item.id} key={item.id}>
-          {item.name}
-        </Form.Select.Option>
-      );
     });
-    const optionPlaces = this.state.places.map((item) => {
-      return (
-        <Form.Select.Option value={item.id} key={item.id}>
-          {item.name}
-        </Form.Select.Option>
-      );
-    });
-    Modal.info({
-      title: "添加或修改临时事件",
-      footer: <></>,
-      content: (
-        <>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexFlow: "column",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Form
-              style={{
-                width: "100%",
-                display: "flex",
-                flexFlow: "column",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              initValues={initVal}
-              onSubmit={(values) => {
-                // Toast.info({
-                //   opts: values.toString(),
-                // });
-                console.log(values);
-              }}
-            >
-              {(formState, value, formAPI) => (
-                <>
-                  <Row style={{ width: "70%" }}>
-                    <Form.DatePicker
-                      field="activityDate"
-                      label="事件日期"
-                      style={{
-                        width: "100%",
-                      }}
-                    ></Form.DatePicker>
-                  </Row>
-                  <Row style={{ width: "70%" }}>
-                    <Col span={24} offset={0}>
-                      <Form.Select
-                        field="startHour"
-                        label="发生时间"
-                        style={{
-                          width: "100%",
-                        }}
-                      >
-                        {optionTimeSelect}
-                      </Form.Select>
-                    </Col>
-                  </Row>
-                  <Row style={{ width: "70%" }}>
-                    <Form.Select
-                      field="activityType"
-                      label="事件类型"
-                      style={{
-                        width: "100%",
-                      }}
-                    >
-                      {optionType}
-                    </Form.Select>
-                  </Row>
-                  <Row style={{ width: "70%" }}>
-                    <Form.Select
-                      field="activityPlace"
-                      label="事件地点"
-                      style={{
-                        width: "100%",
-                      }}
-                    >
-                      {optionPlaces}
-                    </Form.Select>
-                  </Row>
-                  <Row style={{ width: "70%" }}>
-                    <Form.Input
-                      field="activityName"
-                      label="事件名称"
-                      style={{
-                        width: "100%",
-                      }}
-                    ></Form.Input>
-                  </Row>
-                  <Row style={{ width: "30%" }}>
-                    <Col span={24}>
-                      <Button type="primary" htmlType="submit">
-                        提交
-                      </Button>
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </Form>
-          </div>
-        </>
-      ),
-    });
+  };
+  // getNewData();
+  useEffect(getNewData, []);
+  function handleAdd() {
+    handleClick(-1);
   }
-  render() {
-    const noActivity = (
+  const optionTimeSelect = [];
+  for (let i = 6; i <= 22; i++) {
+    optionTimeSelect.push(
+      <Form.Select.Option value={i} key={i}>
+        {i} 点
+      </Form.Select.Option>
+    );
+  }
+  const optionUser = userArray.map((item) => {
+    return (
+      <Form.Select.Option value={item.id} key={item.id}>
+        {item.name}
+      </Form.Select.Option>
+    );
+  });
+  const optionType = typeArray.map((item) => {
+    return (
+      <Form.Select.Option value={item.id} key={item.id}>
+        {item.name}
+      </Form.Select.Option>
+    );
+  });
+
+  const optionPlaces = places.map((item) => (
+    <Form.Select.Option value={item.id} key={item.id}>
+      {item.name}
+    </Form.Select.Option>
+  ));
+  function handleClick(id) {
+    findActivity = activityArray.find((item) => item.id == id);
+    if (findActivity) {
+      setCheckedCycle(findActivity.isCycle);
+      setCheckedGroup(findActivity.isGroup);
+      setCheckedPlace(findActivity.isPlace);
+      const newInitData = {};
+      // 字段名字不一样，reassign
+      newInitData["activityDate"] = findActivity.start;
+      newInitData["startHour"] = findActivity.start.getHours();
+      newInitData["endHour"] = findActivity.end.getHours();
+      newInitData["isCycle"] = findActivity.isCycle;
+      newInitData["isGroup"] = findActivity.isGroup;
+      newInitData["alert"] = findActivity.alert;
+      newInitData["activityName"] = findActivity.name;
+      newInitData["activityType"] = 2;
+      newInitData["isPlace"] = findActivity.isPlace;
+      newInitData["conferenceUrl"] = findActivity.conferenceUrl;
+      newInitData["placeID"] = findActivity.placeID;
+
+      setInitData(newInitData);
+    } else {
+      setInitData({
+        isCycle: false,
+        isPlace: false,
+        isGroup: false,
+        alert: false,
+        activityType: 2,
+      });
+    }
+    console.log(findActivity);
+    setShowModal(true);
+  }
+  const modalContent = (
+    <>
       <div
         style={{
           width: "100%",
-          height: "100%",
           display: "flex",
-          flexFlow: "row",
-          flexWrap: "wrap",
-          placeContent: "center",
-          placeContent: "center",
+          flexFlow: "column",
+          alignContent: "center",
+          alignItems: "center",
+          // margin: "0px 20px 20px 20px",
         }}
       >
-        <Empty
-          image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
-          title="您现在没有临时任务哦 ~"
+        <Form
           style={{
+            width: "100%",
+            display: "flex",
+            flexFlow: "column",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+          initValues={initData}
+          onSubmit={(values) => {
+            // Toast.info({
+            //   opts: values.toString(),
+            // });
+            // console.log(values);
+            const nowDate = new Date(
+              values.activityDate.getFullYear() +
+                "-" +
+                (values.activityDate.getMonth() + 1) +
+                "-" +
+                values.activityDate.getDate()
+            );
+            let postValue = {
+              ...values,
+              start:
+                (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
+              end:
+                (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000 +
+                1,
+              title: values.activityName,
+              text: values.activityName,
+              cycleType: values.isCycle ? 2 : 0,
+              id: Math.floor(Math.random() * 100000),
+              groupArray: values.groupArray ? values.groupArray : [bus.id],
+              placeID: values.placeID ? values.placeID : 1,
+              alertPeriod: values.isCycle ? 2 : 0,
+              alertTime:
+                (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
+            };
+            console.log(postValue);
+            myAxios
+              .post("/event/activity", postValue)
+              .then((data) => {
+                console.log(data);
+                return Promise.resolve();
+              })
+              .then(() => {
+                Toast.success("插入成功！！！");
+                // Modal.destroyAll();
+                setShowModal(false);
+                getNewData();
+                return Promise.resolve();
+              })
+              .catch((err) => {
+                console.log(err);
+                Toast.error("插入失败，原因是：" + err.response.data.message);
+              });
+          }}
+        >
+          {({ formState, values, formAPI }) => (
+            <>
+              <Row style={{ width: "70%" }}>
+                <Form.DatePicker
+                  field="activityDate"
+                  label="事件日期"
+                  style={{
+                    width: "100%",
+                  }}
+                ></Form.DatePicker>
+              </Row>
+              <Row style={{ width: "100%" }}>
+                <Col span={8} offset={8}>
+                  <Form.Select
+                    field="startHour"
+                    label="开始时间"
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    {optionTimeSelect}
+                  </Form.Select>
+                </Col>
+              </Row>
+              <Row style={{ width: "100%" }}>
+                <Col span={8} offset={4}>
+                  <Form.Switch
+                    field="isPlace"
+                    label="是否为线下活动"
+                    onChange={(checked) => {
+                      setCheckedPlace(checked);
+                    }}
+                    disabled={findActivity}
+                  />
+                </Col>
+                <Col span={8} offset={4}>
+                  <Form.Switch
+                    field="alert"
+                    label="是否提醒"
+                    onChange={(checked) => {
+                      setAlert(checked);
+                    }}
+                    disabled={findActivity}
+                  />
+                </Col>
+              </Row>
+              {(isCheckedGroup || (findActivity && findActivity.isGroup)) && (
+                <Row style={{ width: "100%" }}>
+                  <Form.Select
+                    multiple={true}
+                    style={{ width: "100%" }}
+                    label="参与群体人员"
+                    field="groupSelect"
+                  >
+                    {optionUser}
+                  </Form.Select>
+                </Row>
+              )}
+              {(isCheckedPlace || (findActivity && findActivity.isPlace)) && (
+                <Row style={{ width: "100%" }}>
+                  <Form.Select
+                    style={{ width: "100%" }}
+                    label="地点"
+                    field="placeID"
+                  >
+                    {optionPlaces}
+                  </Form.Select>
+                </Row>
+              )}
+              {(!isCheckedPlace || (findActivity && !findActivity.isPlace)) && (
+                <Row style={{ width: "100%" }}>
+                  <Form.Input
+                    style={{ width: "100%" }}
+                    label="会议地址"
+                    field="conferenceUrl"
+                  ></Form.Input>
+                </Row>
+              )}
+              <Row style={{ width: "70%" }}>
+                <Form.Input
+                  field="activityName"
+                  label="临时事件名称"
+                  style={{
+                    width: "100%",
+                  }}
+                ></Form.Input>
+              </Row>
+              <Row style={{ width: "60%" }}>
+                <Col span={8}>
+                  <Button type="primary" htmlType="submit">
+                    提交
+                  </Button>
+                </Col>
+                <Col span={8} offset={8}>
+                  <Button type="primary" onClick={() => setShowModal(false)}>
+                    取消
+                  </Button>
+                </Col>
+              </Row>
+            </>
+          )}
+        </Form>
+        <div style={{ width: "100%", height: "20px" }}></div>
+      </div>
+    </>
+  );
+
+  const column = [
+    {
+      title: "事件名称",
+      dataIndex: "name",
+    },
+    {
+      title: "时间",
+      dataIndex: "time",
+      render: (text, record, index) => (
+        <div>
+          {record.start.getMonth() +
+            1 +
+            "月" +
+            record.start.getDate() +
+            "日 " +
+            record.start.getHours() +
+            "时-" +
+            record.end.getHours() +
+            "时"}
+        </div>
+      ),
+    },
+    {
+      title: "地点或 URL",
+      dataIndex: "place",
+      width: 500,
+      render: (text, record, index) => (
+        <div
+          style={{
+            overflowWrap: "break-word",
+            maxWidth: "500px",
+          }}
+        >
+          {record.isPlace
+            ? // ? places.find((item) => item.id == record.placeID).name
+              record.placeID
+            : record.conferenceUrl}
+        </div>
+      ),
+    },
+    {
+      title: "修改",
+      dataIndex: "modify",
+      width: 50,
+      render: (text, record, index) => (
+        <div>
+          <Button
+            icon={<IconWrench />}
+            theme="borderless"
+            onClick={() => {
+              console.log(record.id);
+              handleClick(record.id);
+            }}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "删除",
+      dataIndex: "delete",
+      width: 50,
+      render: (text, record, index) => (
+        <div>
+          <Button icon={<IconDelete />} theme="borderless" />
+        </div>
+      ),
+    },
+  ];
+
+  const noActivity = (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexFlow: "row",
+        flexWrap: "wrap",
+        placeContent: "center",
+        placeContent: "center",
+      }}
+    >
+      <Empty
+        image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
+        title="您现在没有活动哦 ~"
+        style={{
+          display: "flex",
+          flexFlow: "column",
+          placeContent: "center",
+          placeItems: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
             display: "flex",
             flexFlow: "column",
             placeContent: "center",
             placeItems: "center",
           }}
         >
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexFlow: "column",
-              placeContent: "center",
-              placeItems: "center",
-            }}
-          >
-            <Button
-              theme="solid"
-              type="primary"
-              onClick={() => this.handleAdd()}
-            >
-              添加临时任务
-            </Button>
-          </div>
-        </Empty>
-      </div>
-    );
-    let haveTempEvent = this.state.temporaryActivityArray.length > 0;
-    let haveActivity;
-    if (haveTempEvent) {
-      const activityCard = this.state.temporaryActivityArray.map((item) => {
-        return (
-          <Card
-            style={{ marginLeft: "50px", marginBottom: "50px" }}
-            title={item.name}
-            shadows="hover"
-            onClick={() => this.handleClick(item.id)}
-            key={item.id}
-            headerExtraContent={
-              <div
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                  color: "rgba(var(--semi-blue-6), 1)",
-                  marginTop: "2px",
-                }}
-              >
-                {item.type}
-              </div>
-            }
-          >
-            <Row
-              style={{
-                fontSize: "24px",
-                marginLeft: "5%",
-                display: "flex",
-                flexFlow: "row",
-                minWidth: "200px",
-                width: item.name.length * 10 + "px",
-                maxWidth: "800px",
-              }}
-            >
-              <div style={{ width: "24px", fontSize: "20px" }}>
-                <IconMapPin />
-              </div>
-              <div style={{ fontSize: "16px" }}>{item.place}</div>
-            </Row>
-
-            <Row
-              style={{
-                fontSize: "24px",
-                marginLeft: "5%",
-                display: "flex",
-                flexFlow: "row",
-                minWidth: "100px",
-                marginTop: "12px",
-              }}
-            >
-              <div style={{ width: "24px", fontSize: "20px" }}>
-                <IconClock />
-              </div>
-              <div style={{ fontSize: "16px" }}>
-                {item.time.toLocaleString()}
-              </div>
-            </Row>
-          </Card>
-        );
-      });
-      haveActivity = (
+          <Button theme="solid" type="primary" onClick={() => handleAdd()}>
+            添加活动
+          </Button>
+        </div>
+      </Empty>
+      <Modal
+        visible={showModal}
+        title="添加事件"
+        closable={false}
+        footer={null}
+        afterClose={() => {
+          setCheckedCycle(false);
+          setCheckedGroup(false);
+        }}
+        centered={true}
+      >
+        {modalContent}
+      </Modal>
+    </div>
+  );
+  let haveTempEvent = activityArray.length > 0;
+  let haveActivity;
+  if (haveTempEvent) {
+    haveActivity = (
+      <div
+        style={{
+          width: "100%",
+          overflowY: "hidden",
+        }}
+      >
         <div
           style={{
             width: "100%",
-            overflowY: "scroll",
+            height: "70px",
+            display: "flex",
+            flexFlow: "row",
+            alignItems: "center",
           }}
         >
-          <div
+          <Button
+            theme="solid"
+            type="primary"
+            onClick={() => handleAdd()}
             style={{
-              width: "100%",
-              height: "70px",
-              display: "flex",
-              flexFlow: "row",
-              alignItems: "center",
+              marginLeft: "20px",
             }}
           >
-            <Button
-              theme="solid"
-              type="primary"
-              onClick={() => {
-                this.handleAdd();
-              }}
-              style={{
-                marginLeft: "20px",
-              }}
-            >
-              添加活动
-            </Button>
-            <Select
-              style={{
-                marginLeft: "20px",
-              }}
-              defaultValue={"title"}
-            >
-              <Select.Option value="title">事件名称</Select.Option>
-              <Select.Option value="placeID">地点名</Select.Option>
-              <Select.Option value="time">时间</Select.Option>
-            </Select>
-            <Input
-              suffix={
-                <IconSearch
-                  className="IconSearch"
-                  onClick={() => {
-                    console.log("Test");
-                  }}
-                />
-              }
-              placeholder="多关键词搜索"
-              style={{ marginLeft: "10px", width: "calc(40% - 80px)" }}
-            />
-          </div>
-          <Row
+            添加活动
+          </Button>
+          <Select
             style={{
-              display: "flex",
-              flexFlow: "row",
-              flexWrap: "wrap",
-              justifyItems: "center",
-              justifyContent: "center",
+              marginLeft: "20px",
+            }}
+            defaultValue={"title"}
+            onChange={(value) => {
+              nowChoice.current = value;
             }}
           >
-            {activityCard}
-          </Row>
+            <Select.Option value="title">事件名称</Select.Option>
+            <Select.Option value="placeID">地点名</Select.Option>
+            <Select.Option value="time">时间</Select.Option>
+          </Select>
+          <Input
+            suffix={
+              <IconSearch
+                className="IconSearch"
+                onClick={() => {
+                  console.log(nowChoice.current);
+                  if (nowChoice.current == "title") {
+                    const rawArr = activityArray.filter((item) => {
+                      // console.log(nowText.current);
+                      // console.log(item);
+                      return item.title.includes(nowText.current);
+                    });
+                    setFilteredArray(rawArr);
+                  } else if (nowChoice.current == "time") {
+                    if (nowText.current == "降序") {
+                      const _activityArray = [...activityArray];
+                      setFilteredArray(
+                        _activityArray.sort((a, b) => {
+                          return a.start.getTime() - b.start.getTime();
+                        })
+                      );
+                    } else if (nowText.current == "升序") {
+                      const _activityArray = [...activityArray];
+                      setFilteredArray(
+                        _activityArray.sort((a, b) => {
+                          return b.start.getTime() - a.start.getTime();
+                        })
+                      );
+                    }
+                  }
+                }}
+              />
+            }
+            placeholder="多关键词搜索"
+            style={{ marginLeft: "10px", width: "calc(40% - 80px)" }}
+            onChange={(value, e) => {
+              nowText.current = value;
+            }}
+          />
         </div>
-      );
-    }
-    return haveTempEvent ? haveActivity : noActivity;
+        <Row style={{ width: "100%", height: "calc(100% - 200px)" }}>
+          <Table
+            columns={column}
+            dataSource={filteredArray}
+            pagination={{ pageSize: 8 }}
+          />
+        </Row>
+        <Modal
+          visible={showModal}
+          title="添加事件"
+          footer={null}
+          afterClose={() => {
+            setCheckedCycle(false);
+            setCheckedGroup(false);
+          }}
+          closable={false}
+          centered={true}
+        >
+          {modalContent}
+        </Modal>
+      </div>
+    );
   }
+  return haveTempEvent ? haveActivity : noActivity;
 }

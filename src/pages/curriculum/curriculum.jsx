@@ -93,7 +93,7 @@ export class Curriculum extends React.Component {
               break;
             }
           }
-          return hasId;
+          return hasId && item.activityType != 2;
         });
         if (!filterData) filterData = [];
         const cycleEvent = [];

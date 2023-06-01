@@ -1,13 +1,28 @@
 import { useEffect, useState } from "react";
 import { ReactTerminal, TerminalContextProvider } from "react-terminal";
+import { myAxios } from "../../utils/fetch";
 
 export function Terminal(props) {
   const getLog = () => {
-    return new Promise((resovle, reject) => {
-      setTimeout(() => {
-        console.log("finish");
-        resovle("test");
-      }, 1000);
+    return new Promise((resolve, reject) => {
+      myAxios
+        .get("/log/")
+        .then((data) => {
+          console.log(data);
+          resolve(
+            data.logs.map((item) => (
+              <div key={item.id}>
+                id: {item.id}, level: {item.level}, time:{" "}
+                {new Date(item.time * 1000).toLocaleTimeString}, action:{" "}
+                {item.message}, user: {item.user},
+              </div>
+            ))
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+          resolve("获取log失败");
+        });
     });
   };
   const commands = {

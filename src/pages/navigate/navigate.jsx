@@ -15,7 +15,7 @@ export class NavigateActivity extends React.Component {
     this.validatePlaceSelect = this.validatePlaceSelect.bind(this);
     this.state = {
       placeArray: ["placeholder"],
-      placeObj: {}, 
+      placeObj: {},
       isLoadMap: false,
       navNum: 2,
       pathArray: [
@@ -125,7 +125,7 @@ export class NavigateActivity extends React.Component {
       placeArray: bus.places,
     });
     var placeObj = {};
-    for(const place of bus.places){
+    for (const place of bus.places) {
       placeObj[place.id] = place;
     }
     this.setState({
@@ -139,7 +139,7 @@ export class NavigateActivity extends React.Component {
       });
   }
   render() {
-    const optionJSX = this.state.placeArray.map((item,index) => {
+    const optionJSX = this.state.placeArray.map((item, index) => {
       // console.log(item);
       return (
         <Form.Select.Option value={item} key={item.id}>
@@ -147,7 +147,7 @@ export class NavigateActivity extends React.Component {
         </Form.Select.Option>
       );
     });
-  
+
     return (
       <div
         style={{
@@ -214,7 +214,10 @@ export class NavigateActivity extends React.Component {
                     </Col>
                   </Row>
                   {/* 按照navNum简历对应数量的地点选择框 */}
-                  {Array.from({ length: this.state.navNum }, (_, i) => i + 1).map((item) => {
+                  {Array.from(
+                    { length: this.state.navNum },
+                    (_, i) => i + 1
+                  ).map((item) => {
                     return (
                       <Row>
                         <Col span={12}>
@@ -280,9 +283,12 @@ export class NavigateActivity extends React.Component {
                           .then((data) => {
                             const nodes = data.route;
                             const path = [];
-                            
+
                             for (const node of nodes) {
-                              path.push([this.state.placeObj[node].x, this.state.placeObj[node].y]);
+                              path.push([
+                                this.state.placeObj[node].x,
+                                this.state.placeObj[node].y,
+                              ]);
                             }
                             this.setState((prev) => {
                               prev.mapOption.series[0].data = path;
