@@ -1,4 +1,4 @@
-impot * as echarts from "echarts";
+import * as echarts from "echarts";
 import ReactCharts from "echarts-for-react";
 import mapBUPT from "../../static/map.svg";
 import React from "react";
