@@ -20,26 +20,18 @@ export class NavigateActivity extends React.Component {
       navNum: 2,
       pathArray: [
         {
-          time: "2019-07-14 10:35",
-          extra: "预计到达时间",
           content: "第一个地点",
           type: "ongoing",
         },
         {
-          time: "2019-06-13 16:17",
-          extra: "预计到达时间",
           content: "第二个地点",
           color: "pink",
         },
         {
-          time: "2019-05-14 18:34",
-          extra: "预计到达时间",
           content: "第三个地点",
           color: "pink",
         },
         {
-          time: "2019-05-09 09:12",
-          extra: "预计到达时间",
           content: "第四个地点",
           type: "success",
         },
@@ -182,60 +174,72 @@ export class NavigateActivity extends React.Component {
               placeContent: "center",
             }}
           >
-            <Form
-              style={{ width: "100%", maxHeight: "50%" }}
-              onSubmit={(e) => {
-                console.log(e);
+            <div
+              style={{
+                height: "100%",
+                width: "100%",
+                overflowY: "scroll",
+                overflowX: "hidden",
+                display: "flex",
+                flexFlow: "row",
+                placeContent: "center",
               }}
-              validateFields={this.validatePlaceSelect}
               className="scrollbarContainer"
             >
-              {(formState, value, formAPI) => (
-                <>
-                  <Row>
-                    <Col span={12}>
-                      {/* 设置一个开始导航的按钮和一个输入数字的框用来选择有几个途径点 */}
-                      <Form.InputNumber
-                        field="num"
-                        label="导航点个数"
-                        style={{
-                          width: "90%",
-                        }}
-                        min={2}
-                        max={this.state.placeArray.length}
-                        defaultValue={2}
-                        onChange={(value) => {
-                          this.setState((prev) => {
-                            prev.navNum = value;
-                            return prev;
-                          });
-                        }}
-                      />
-                    </Col>
-                  </Row>
-                  {/* 按照navNum简历对应数量的地点选择框 */}
-                  {Array.from(
-                    { length: this.state.navNum },
-                    (_, i) => i + 1
-                  ).map((item) => {
-                    return (
-                      <Row>
-                        <Col span={12}>
-                          <Form.Select
-                            name={`place${item}`}
-                            field={`place${item}`}
-                            label={`途径地点${item}`}
-                            style={{
-                              width: "90%",
-                            }}
-                          >
-                            {optionJSX}
-                          </Form.Select>
-                        </Col>
-                      </Row>
-                    );
-                  })}
-                  {/* <Row>
+              <Form
+                style={{ width: "100%", maxHeight: "50%" }}
+                onSubmit={(e) => {
+                  console.log(e);
+                }}
+                validateFields={this.validatePlaceSelect}
+                className="scrollbarContainer"
+              >
+                {(formState, value, formAPI) => (
+                  <>
+                    <Row>
+                      <Col span={12}>
+                        {/* 设置一个开始导航的按钮和一个输入数字的框用来选择有几个途径点 */}
+                        <Form.InputNumber
+                          field="num"
+                          label="导航点个数"
+                          style={{
+                            width: "90%",
+                          }}
+                          min={2}
+                          max={bus.places.length}
+                          defaultValue={2}
+                          onChange={(value) => {
+                            this.setState((prev) => {
+                              prev.navNum = value;
+                              return prev;
+                            });
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                    {/* 按照navNum简历对应数量的地点选择框 */}
+                    {Array.from(
+                      { length: this.state.navNum },
+                      (_, i) => i + 1
+                    ).map((item) => {
+                      return (
+                        <Row>
+                          <Col span={12}>
+                            <Form.Select
+                              name={`place${item}`}
+                              field={`place${item}`}
+                              label={`途径地点${item}`}
+                              style={{
+                                width: "90%",
+                              }}
+                            >
+                              {optionJSX}
+                            </Form.Select>
+                          </Col>
+                        </Row>
+                      );
+                    })}
+                    {/* <Row>
                     <Col span={12}>
                       <Form.Select
                         field="startPlace"
@@ -260,58 +264,80 @@ export class NavigateActivity extends React.Component {
                       </Form.Select>
                     </Col>
                   </Row> */}
-                  <Row>
-                    <Button
-                      theme="solid"
-                      type="primary"
-                      style={{
-                        width: "70px",
-                      }}
-                      htmlType="submit"
-                      onClick={() => {
-                        console.log(formState.values);
-                        myAxios
-                          .post("/map/navigate", formState.values, {
-                            params: Object.values(formState.values).reduce(
-                              (acc, cur) => {
-                                acc["nodes"].push(cur.id);
-                                return acc;
-                              },
-                              { nodes: [] }
-                            ),
-                          })
-                          .then((data) => {
-                            const nodes = data.route;
-                            const path = [];
+                    <Row>
+                      <Button
+                        theme="solid"
+                        type="primary"
+                        style={{
+                          width: "70px",
+                        }}
+                        htmlType="submit"
+                        onClick={() => {
+                          console.log(formState.values);
+                          myAxios
+                            .post("/map/navigate", formState.values, {
+                              params: Object.values(formState.values).reduce(
+                                (acc, cur) => {
+                                  acc["nodes"].push(cur.id);
+                                  return acc;
+                                },
+                                { nodes: [] }
+                              ),
+                            })
+                            .then((data) => {
+                              const nodes = data.route;
+                              const path = [];
+                              const pathArrays = [];
 
-                            for (const node of nodes) {
-                              path.push([
-                                this.state.placeObj[node].x,
-                                this.state.placeObj[node].y,
-                              ]);
-                            }
-                            this.setState((prev) => {
-                              prev.mapOption.series[0].data = path;
-                              return prev;
+                              for (const node of nodes) {
+                                path.push([
+                                  this.state.placeObj[node].x,
+                                  this.state.placeObj[node].y,
+                                ]);
+                                if (node == nodes[0]) {
+                                  pathArrays.push({
+                                    content: this.state.placeObj[node].name,
+                                    type: "ongoing",
+                                  });
+                                } else if (node == nodes[nodes.length - 1]) {
+                                  pathArrays.push({
+                                    content: this.state.placeObj[node].name,
+                                    type: "success",
+                                  });
+                                } else {
+                                  pathArrays.push({
+                                    content: this.state.placeObj[node].name,
+                                    color: "pink",
+                                  });
+                                }
+                              }
+
+                              this.setState({
+                                pathArray: pathArrays,
+                                mapOption: {
+                                  ...this.state.mapOption,
+                                  series: [
+                                    {
+                                      ...this.state.mapOption.series[0],
+                                      data: [
+                                        {
+                                          coords: path,
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              });
                             });
-                          });
-                      }}
-                    >
-                      查询
-                    </Button>
-                  </Row>
-                </>
-              )}
-            </Form>
-            <div
-              style={{
-                height: "50%",
-                width: "100%",
-                overflowY: "scroll",
-                overflowX: "hidden",
-              }}
-              className="scrollbarContainer"
-            >
+                        }}
+                      >
+                        查询
+                      </Button>
+                    </Row>
+                  </>
+                )}
+              </Form>
+
               <Timeline
                 mode="alternate"
                 style={{ width: "100%" }}
