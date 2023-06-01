@@ -41,12 +41,12 @@ export function App(props) {
   const location = useLocation();
   const timeChangeHandler = () => {
     if (timeState == "forward") {
-      let timeStamp = date.getTime() + 1000 * 60 * 10;
+      let timeStamp = date.getTime() + 1000 * 60 * 60 * 24;
       setDate(new Date(timeStamp));
       bus.date = date;
       timeChangeEmiiter.emit("timeChange");
     } else if (timeState == "backward") {
-      let timeStamp = date.getTime() - 1000 * 60 * 10;
+      let timeStamp = date.getTime() - 1000 * 60 * 60 * 24;
       setDate(new Date(timeStamp));
       bus.date = date;
       timeChangeEmiiter.emit("timeChange");
@@ -249,8 +249,10 @@ export function App(props) {
                     : "speed-button-unclicked"
                 }
                 onClick={() => {
-                  bus.timeState = "backward";
-                  setTimeState("backward");
+                  if (bus.timeState != "backward") {
+                    bus.timeState = "backward";
+                    setTimeState("backward");
+                  }
                 }}
               />
               <IconPause
@@ -264,8 +266,10 @@ export function App(props) {
                     : "speed-button-unclicked"
                 }
                 onClick={() => {
-                  bus.timeState = "pause";
-                  setTimeState("pause");
+                  if (bus.timeState != "pause") {
+                    bus.timeState = "pause";
+                    setTimeState("pause");
+                  }
                 }}
               />
               <IconFastForward
@@ -275,8 +279,10 @@ export function App(props) {
                     : "speed-button-unclicked"
                 }
                 onClick={() => {
-                  bus.timeState = "forward";
-                  setTimeState("forward");
+                  if (bus.timeState != "forward") {
+                    bus.timeState = "forward";
+                    setTimeState("forward");
+                  }
                 }}
               />
             </div>

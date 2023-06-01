@@ -98,7 +98,7 @@ export class Curriculum extends React.Component {
         if (!filterData) filterData = [];
         const cycleEvent = [];
         for (let item of filterData) {
-          if (item.cycleType != 0) {
+          if (item.cycleType == 2) {
             for (let i = -16; i < 0; i++) {
               const cycleItem = {
                 ...item,
@@ -113,6 +113,26 @@ export class Curriculum extends React.Component {
                 ...item,
                 start: item.start + i * 604800,
                 end: item.end + i * 604800,
+              };
+              cycleEvent.push(cycleItem);
+            }
+          }
+
+          if (item.cycleType == 1) {
+            for (let i = -16 * 16; i < 0; i++) {
+              const cycleItem = {
+                ...item,
+                start: item.start + i * 60 * 60 * 24,
+                end: item.end + i * 60 * 60 * 24,
+              };
+              cycleEvent.push(cycleItem);
+            }
+
+            for (let i = 1; i < 16 * 16 + 1; i++) {
+              const cycleItem = {
+                ...item,
+                start: item.start + i * 60 * 60 * 24,
+                end: item.end + i * 60 * 60 * 24,
               };
               cycleEvent.push(cycleItem);
             }
@@ -181,6 +201,24 @@ export class Curriculum extends React.Component {
         {item.name}
       </Form.Select.Option>
     ));
+    const optionCycles = [
+      {
+        id: 0,
+        name: "不重复",
+      },
+      {
+        id: 1,
+        name: "每天",
+      },
+      {
+        id: 2,
+        name: "每周",
+      },
+    ].map((item) => (
+      <Form.Select.Option value={item.id} key={item.id}>
+        {item.name}
+      </Form.Select.Option>
+    ));
     Modal.info({
       title: "添加事件",
       footer: <></>,
@@ -210,7 +248,7 @@ export class Curriculum extends React.Component {
                     ? date.getHours()
                     : 6,
                 activityDate: date,
-                isCycle: false,
+                isCycle: 0,
                 isPlace: false,
                 isGroup: false,
                 alert: false,
@@ -237,11 +275,11 @@ export class Curriculum extends React.Component {
                     1000,
                   title: values.activityName,
                   text: values.activityName,
-                  cycleType: values.isCycle ? 2 : 0,
+                  cycleType: values.isCycle,
                   id: Math.floor(Math.random() * 100000),
                   groupArray: values.groupArray ? values.groupArray : [bus.id],
                   placeID: values.placeID ? values.placeID : 1,
-                  alertPeriod: values.isCycle ? 2 : 0,
+                  alertPeriod: values.isCycle,
                   alertTime:
                     (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) /
                     1000,
@@ -304,14 +342,17 @@ export class Curriculum extends React.Component {
                   </Row>
                   <Row style={{ width: "100%" }}>
                     <Col span={8} offset={4}>
-                      <Form.Switch
+                      <Form.Select
                         field="isCycle"
                         label="是否为周期事件"
                         onChange={(checked) => {
                           this.setState({ isCheckedCycle: checked });
                         }}
-                      />
+                      >
+                        {optionCycles}
+                      </Form.Select>
                     </Col>
+
                     <Col span={8} offset={4}>
                       <Form.Switch
                         field="isGroup"

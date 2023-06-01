@@ -18,14 +18,25 @@ import {
   Select,
   Input,
   Toast,
+  DatePicker,
+  TextArea,
 } from "@douyinfe/semi-ui";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { activityMock } from "./activity-mock";
 import { bus } from "../../bus";
 import "./activity.css";
 import { myAxios } from "../../utils/fetch";
+import { InputNumber } from "@douyinfe/semi-ui/lib/es/inputNumber";
 
 export function ActivityManage() {
+  const optionTimeSelect = [];
+  for (let i = 6; i <= 22; i++) {
+    optionTimeSelect.push(
+      <Form.Select.Option value={i} key={i}>
+        {i} 点
+      </Form.Select.Option>
+    );
+  }
   const [activityArray, setActivityArray] = useState(activityMock);
   const [filteredArray, setFilteredArray] = useState(activityMock);
   const typeArray = bus.activityTypeArray;
@@ -35,14 +46,92 @@ export function ActivityManage() {
   const [isCheckedGroup, setCheckedGroup] = useState(false);
   const [isCheckedPlace, setCheckedPlace] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showArrangeModal, setShowArrangeModal] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [arrangeNumber, setArrangeNumber] = useState(1);
   const [initData, setInitData] = useState({});
   const nowChoice = useRef("title");
   const nowText = useRef("");
+  const arrangeDate = useRef([]);
+  const arrangeStart = useRef([]);
+  const arrangeEnd = useRef([]);
+  const [conflict, setConflict] = useState(null);
   var findActivity = null;
+  const arrangeTimeList = useMemo(() => {
+    const ret = [];
+    arrangeDate.current = [];
+    arrangeStart.current = [];
+    arrangeEnd.current = [];
+    const getDate = new Date();
+    for (let i = 0; i < arrangeNumber; i++) {
+      arrangeDate.current.push(new Date());
+      arrangeStart.current.push(8);
+      arrangeEnd.current.push(8);
+      const id = getDate.getTime() + i * 10;
+      ret.push(
+        <div
+          key={id}
+          style={{
+            width: "50%",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexFlow: "column",
+              placeContent: "center space-evenly",
+              marginTop: "10px",
+            }}
+            key={id + 1}
+          >
+            <DatePicker
+              onChange={(date) => {
+                arrangeDate.current[i] = date;
+              }}
+              key={id + 2}
+              style={{
+                width: "100%",
+                marginTop: "5px",
+              }}
+            ></DatePicker>
+            <Select
+              key={id + 3}
+              label="开始时间"
+              style={{
+                width: "100%",
+                marginTop: "5px",
+              }}
+              onChange={(value) => {
+                console.log(value);
+                arrangeStart.current[i] = value;
+              }}
+            >
+              {optionTimeSelect}
+            </Select>
+            <Select
+              key={id + 4}
+              label="结束时间"
+              style={{
+                width: "100%",
+                marginTop: "5px",
+              }}
+              onChange={(value) => {
+                console.log(value);
+                arrangeEnd.current[i] = value;
+              }}
+              // ref={refEnd}
+            >
+              {optionTimeSelect}
+            </Select>
+          </div>
+        </div>
+      );
+    }
+    return ret;
+  }, [arrangeNumber]);
   const getNewData = () => {
     myAxios.get("/event/activity/all").then((data) => {
-      console.log(data.activities);
       data.activities = data.activities.map((item) => {
         const _item = { ...item };
         _item.start = new Date(item.start * 1000);
@@ -50,6 +139,7 @@ export function ActivityManage() {
         _item.name = item.title;
         return _item;
       });
+      console.log(data.activities);
       if (bus.isAdmin) {
         setActivityArray(data.activities);
         setFilteredArray(data.activities);
@@ -70,19 +160,11 @@ export function ActivityManage() {
       }
     });
   };
-  // getNewData();
   useEffect(getNewData, []);
   function handleAdd() {
     handleClick(-1);
   }
-  const optionTimeSelect = [];
-  for (let i = 6; i <= 22; i++) {
-    optionTimeSelect.push(
-      <Form.Select.Option value={i} key={i}>
-        {i} 点
-      </Form.Select.Option>
-    );
-  }
+
   const optionUser = userArray.map((item) => {
     return (
       <Form.Select.Option value={item.id} key={item.id}>
@@ -126,7 +208,7 @@ export function ActivityManage() {
       setInitData(newInitData);
     } else {
       setInitData({
-        isCycle: false,
+        isCycle: 0,
         isPlace: false,
         isGroup: false,
         alert: false,
@@ -135,6 +217,193 @@ export function ActivityManage() {
     console.log(findActivity);
     setShowModal(true);
   }
+  const optionCycles = [
+    {
+      id: 0,
+      name: "不重复",
+    },
+    {
+      id: 1,
+      name: "每天",
+    },
+    {
+      id: 2,
+      name: "每周",
+    },
+  ].map((item) => (
+    <Form.Select.Option value={item.id} key={item.id}>
+      {item.name}
+    </Form.Select.Option>
+  ));
+
+  const arrangeValue = useRef({
+    users: [],
+    cycleType: 0,
+    times: [],
+  });
+  const conflictJSX = useMemo(() => {
+    if (!conflict) return <></>;
+    if (conflict.length == 0) return <>所有时间段都可行</>;
+    else
+      return conflict.map((item, index) => {
+        if (item.length != 0) {
+          return (
+            <div key={item}>
+              用户：{item.toString()}在时间段
+              {new Date(
+                arrangeValue.current.times[index][0] * 1000
+              ).toLocaleDateString() +
+                " " +
+                new Date(
+                  arrangeValue.current.times[index][0] * 1000
+                ).getHours() +
+                " 时"}{" "}
+              -{" "}
+              {new Date(
+                arrangeValue.current.times[index][1] * 1000
+              ).toLocaleDateString() +
+                " " +
+                new Date(
+                  arrangeValue.current.times[index][1] * 1000
+                ).getHours() +
+                " " +
+                " 时"}
+              有冲突。
+            </div>
+          );
+        }
+        return (
+          <div key={item}>
+            时间段
+            {new Date(
+              arrangeValue.current.times[index][0] * 1000
+            ).toLocaleDateString() +
+              " " +
+              new Date(arrangeValue.current.times[index][0] * 1000).getHours() +
+              " 时"}{" "}
+            -{" "}
+            {new Date(
+              arrangeValue.current.times[index][1] * 1000
+            ).toLocaleDateString() +
+              " " +
+              new Date(arrangeValue.current.times[index][1] * 1000).getHours() +
+              " 时"}
+            无冲突。
+          </div>
+        );
+      });
+  }, [conflict]);
+
+  const arrangeModalContent = (
+    <>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexFlow: "column",
+          alignContent: "center",
+          alignItems: "center",
+          // margin: "0px 20px 20px 20px",
+        }}
+      >
+        <>参与群体人员</>
+        <Select
+          multiple={true}
+          style={{ width: "100%" }}
+          label="参与群体人员"
+          field="groupSelect"
+          onChange={(value) => {
+            arrangeValue.current.users = value;
+          }}
+        >
+          {optionUser}
+        </Select>
+        <div style={{ marginTop: "20px" }}>周期</div>
+        <Select
+          label="周期"
+          onChange={(value) => {
+            arrangeValue.current.cycleType = value;
+          }}
+        >
+          {optionCycles}
+        </Select>
+        <InputNumber
+          defaultValue={arrangeNumber}
+          onChange={(value) => {
+            setArrangeNumber(value);
+          }}
+          style={{
+            marginTop: "20px",
+          }}
+        />
+        {arrangeTimeList}
+        <div
+          style={{
+            display: "flex",
+            flexFlow: "row",
+            alignContent: "center",
+            justifyContent: "space-evenly",
+            width: "70%",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          <Button
+            type="primary"
+            onClick={() => {
+              console.log(arrangeStart.current);
+              console.log(arrangeEnd.current);
+
+              arrangeValue.current.times = [];
+              for (let i = 0; i < arrangeDate.current.length; i++) {
+                let _ = arrangeDate.current[i];
+                let __ = new Date(
+                  _.getFullYear(),
+                  _.getMonth() + 1,
+                  _.getDate()
+                );
+                arrangeValue.current.times.push([
+                  (__.getTime() + arrangeStart.current[i] * 60 * 60 * 1000) /
+                    1000,
+                  (__.getTime() + arrangeEnd.current[i] * 60 * 60 * 1000) /
+                    1000,
+                ]);
+              }
+              console.log(new Date(arrangeValue.current.times[0][0] * 1000));
+              myAxios
+                .post("/event/arrange", arrangeValue.current)
+                .then((res) => {
+                  console.log(res.conflicts);
+                  setConflict(res.conflicts);
+                });
+            }}
+          >
+            查询
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              setShowArrangeModal(false);
+            }}
+          >
+            取消
+          </Button>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexFlow: "column",
+            placeContent: "center center",
+            margin: "10px",
+          }}
+        >
+          {conflictJSX}
+        </div>
+      </div>
+    </>
+  );
+
   const modalContent = (
     <>
       <div
@@ -175,11 +444,11 @@ export function ActivityManage() {
               end: (nowDate.getTime() + 1000 * 60 * 60 * values.endHour) / 1000,
               title: values.activityName,
               text: values.activityName,
-              cycleType: values.isCycle ? 2 : 0,
+              cycleType: values.isCycle,
               id: Math.floor(Math.random() * 100000),
               groupArray: values.groupArray ? values.groupArray : [bus.id],
               placeID: values.placeID ? values.placeID : 1,
-              alertPeriod: values.isCycle ? 2 : 0,
+              alertPeriod: values.isCycle,
               alertTime:
                 (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
             };
@@ -240,14 +509,15 @@ export function ActivityManage() {
               </Row>
               <Row style={{ width: "100%" }}>
                 <Col span={8} offset={4}>
-                  <Form.Switch
+                  <Form.Select
                     field="isCycle"
                     label="是否为周期事件"
                     onChange={(checked) => {
-                      setCheckedCycle(checked);
+                      this.setState({ isCheckedCycle: checked });
                     }}
-                    disabled={findActivity != undefined}
-                  />
+                  >
+                    {optionCycles}
+                  </Form.Select>
                 </Col>
                 <Col span={8} offset={4}>
                   <Form.Switch
@@ -475,6 +745,7 @@ export function ActivityManage() {
     </div>
   );
   let haveTempEvent = activityArray.length > 0;
+  // let haveTempEvent = true;
   let haveActivity;
   if (haveTempEvent) {
     haveActivity = (
@@ -555,6 +826,19 @@ export function ActivityManage() {
               nowText.current = value;
             }}
           />
+          <Button
+            theme="solid"
+            type="primary"
+            onClick={() => {
+              setShowArrangeModal(true);
+              setArrangeNumber(2);
+            }}
+            style={{
+              marginLeft: "20px",
+            }}
+          >
+            自动排期
+          </Button>
         </div>
         <Row style={{ width: "100%", height: "calc(100% - 200px)" }}>
           <Table
@@ -575,6 +859,15 @@ export function ActivityManage() {
           centered={true}
         >
           {modalContent}
+        </Modal>
+        <Modal
+          visible={showArrangeModal}
+          title="自动排期建议"
+          footer={null}
+          closable={true}
+          centered={false}
+        >
+          {arrangeModalContent}
         </Modal>
       </div>
     );

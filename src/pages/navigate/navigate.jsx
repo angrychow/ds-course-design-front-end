@@ -223,9 +223,10 @@ export class NavigateActivity extends React.Component {
                       (_, i) => i + 1
                     ).map((item) => {
                       return (
-                        <Row>
+                        <Row key={item}>
                           <Col span={12}>
                             <Form.Select
+                              key={item}
                               name={`place${item}`}
                               field={`place${item}`}
                               label={`途径地点${item}`}
