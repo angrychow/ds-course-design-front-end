@@ -248,13 +248,14 @@ export function ActivityManage() {
     times: [],
   });
   const conflictJSX = useMemo(() => {
+    const idDate = new Date();
     if (!conflict) return <></>;
     if (conflict.length == 0) return <>所有时间段都可行</>;
-    else
-      return conflict.map((item, index) => {
+    else {
+      const ret = conflict.map((item, index) => {
         if (item.length != 0) {
           return (
-            <div key={item}>
+            <div key={idDate.getTime() + index}>
               用户：{item.toString()}在时间段
               {new Date(
                 arrangeValue.current.times[index][0] * 1000
@@ -277,27 +278,35 @@ export function ActivityManage() {
               有冲突。
             </div>
           );
+        } else {
+          return (
+            <div key={idDate.getTime() + index}>
+              时间段
+              {new Date(
+                arrangeValue.current.times[index][0] * 1000
+              ).toLocaleDateString() +
+                " " +
+                new Date(
+                  arrangeValue.current.times[index][0] * 1000
+                ).getHours() +
+                " 时"}{" "}
+              -{" "}
+              {new Date(
+                arrangeValue.current.times[index][1] * 1000
+              ).toLocaleDateString() +
+                " " +
+                new Date(
+                  arrangeValue.current.times[index][1] * 1000
+                ).getHours() +
+                " 时"}
+              无冲突。
+            </div>
+          );
         }
-        return (
-          <div key={item}>
-            时间段
-            {new Date(
-              arrangeValue.current.times[index][0] * 1000
-            ).toLocaleDateString() +
-              " " +
-              new Date(arrangeValue.current.times[index][0] * 1000).getHours() +
-              " 时"}{" "}
-            -{" "}
-            {new Date(
-              arrangeValue.current.times[index][1] * 1000
-            ).toLocaleDateString() +
-              " " +
-              new Date(arrangeValue.current.times[index][1] * 1000).getHours() +
-              " 时"}
-            无冲突。
-          </div>
-        );
       });
+      console.log(ret);
+      return ret;
+    }
   }, [conflict]);
 
   const arrangeModalContent = (
@@ -363,11 +372,7 @@ export function ActivityManage() {
               arrangeValue.current.times = [];
               for (let i = 0; i < arrangeDate.current.length; i++) {
                 let _ = arrangeDate.current[i];
-                let __ = new Date(
-                  _.getFullYear(),
-                  _.getMonth() + 1,
-                  _.getDate()
-                );
+                let __ = new Date(_.getFullYear(), _.getMonth(), _.getDate());
                 arrangeValue.current.times.push([
                   (__.getTime() + arrangeStart.current[i] * 60 * 60 * 1000) /
                     1000,
