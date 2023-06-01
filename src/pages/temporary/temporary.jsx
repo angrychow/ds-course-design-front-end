@@ -26,8 +26,9 @@ import "./temporary.css";
 import { myAxios } from "../../utils/fetch";
 
 export function Temporary() {
-  const [activityArray, setActivityArray] = useState(activityMock);
-  const [filteredArray, setFilteredArray] = useState(activityMock);
+  const isUpdate = useRef(false);
+  const [activityArray, setActivityArray] = useState([]);
+  const [filteredArray, setFilteredArray] = useState([]);
   const typeArray = bus.activityTypeArray;
   const places = bus.places;
   const userArray = bus.userArray;
@@ -107,6 +108,7 @@ export function Temporary() {
     </Form.Select.Option>
   ));
   function handleClick(id) {
+    isUpdate.current = id != -1;
     findActivity = activityArray.find((item) => item.id == id);
     if (findActivity) {
       setCheckedCycle(findActivity.isCycle);
@@ -117,7 +119,7 @@ export function Temporary() {
       newInitData["activityDate"] = findActivity.start;
       newInitData["startHour"] = findActivity.start.getHours();
       newInitData["endHour"] = findActivity.end.getHours();
-      newInitData["isCycle"] = findActivity.isCycle;
+      newInitData["isCycle"] = false;
       newInitData["isGroup"] = findActivity.isGroup;
       newInitData["alert"] = findActivity.alert;
       newInitData["activityName"] = findActivity.name;
@@ -125,6 +127,7 @@ export function Temporary() {
       newInitData["isPlace"] = findActivity.isPlace;
       newInitData["conferenceUrl"] = findActivity.conferenceUrl;
       newInitData["placeID"] = findActivity.placeID;
+      newInitData["id"] = findActivity.id;
 
       setInitData(newInitData);
     } else {
@@ -161,10 +164,6 @@ export function Temporary() {
           }}
           initValues={initData}
           onSubmit={(values) => {
-            // Toast.info({
-            //   opts: values.toString(),
-            // });
-            // console.log(values);
             const nowDate = new Date(
               values.activityDate.getFullYear() +
                 "-" +
@@ -172,7 +171,9 @@ export function Temporary() {
                 "-" +
                 values.activityDate.getDate()
             );
-            let postValue = {
+            values.isCycle = false;
+            console.log(values);
+            var postValue = {
               ...values,
               start:
                 (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
@@ -181,23 +182,28 @@ export function Temporary() {
                 1,
               title: values.activityName,
               text: values.activityName,
-              cycleType: values.isCycle ? 2 : 0,
-              id: Math.floor(Math.random() * 100000),
-              groupArray: values.groupArray ? values.groupArray : [bus.id],
+              cycleType: 0,
+              id: isUpdate.current
+                ? values.id
+                : Math.floor(Math.random() * 100000),
+              groupArray: [bus.id],
               placeID: values.placeID ? values.placeID : 1,
-              alertPeriod: values.isCycle ? 2 : 0,
+              alertPeriod: 0,
               alertTime:
                 (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
             };
-            console.log(postValue);
+            console.log(values);
             myAxios
-              .post("/event/activity", postValue)
+              .post(
+                isUpdate.current ? "/event/update" : "/event/activity",
+                postValue
+              )
               .then((data) => {
                 console.log(data);
                 return Promise.resolve();
               })
               .then(() => {
-                Toast.success("插入成功！！！");
+                Toast.success(isUpdate.current ? "修改成功！" : "插入成功！");
                 // Modal.destroyAll();
                 setShowModal(false);
                 getNewData();
@@ -379,7 +385,17 @@ export function Temporary() {
       width: 50,
       render: (text, record, index) => (
         <div>
-          <Button icon={<IconDelete />} theme="borderless" />
+          <Button
+            icon={<IconDelete />}
+            onClick={() => {
+              console.log(record);
+              myAxios.get("/event/delete?id=" + record.id).then((res) => {
+                Toast.info("删除成功");
+                getNewData();
+              });
+            }}
+            theme="borderless"
+          />
         </div>
       ),
     },

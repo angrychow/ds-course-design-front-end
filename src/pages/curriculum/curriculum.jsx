@@ -37,7 +37,7 @@ export class Curriculum extends React.Component {
       currentTime: bus.date,
       isCheckedCycle: false,
       isCheckedGroup: false,
-      activityArray: activityMock,
+      activityArray: [],
       userArray: bus.userArray,
       typeArray: bus.activityTypeArray,
       isCheckedPlace: false,
@@ -140,6 +140,7 @@ export class Curriculum extends React.Component {
         }
         filterData = filterData.concat(cycleEvent);
         console.log(filterData);
+        bus.activityArray = filterData;
         this.setState({
           events: filterData.map((item) => {
             return {

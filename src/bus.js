@@ -58,4 +58,5 @@ export const bus = {
     { name: "Octopus", id: "2021211111", is_admin: 1 },
   ],
   isAdmin: true,
+  activityArray: [],
 }

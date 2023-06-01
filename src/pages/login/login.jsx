@@ -45,7 +45,7 @@ export function Login(props) {
                 .then((data) => {
                   console.log(data);
                   localStorage["token"] = data;
-                  navigate("/");
+                  navigate("/curriculum");
                 });
             }}
           >

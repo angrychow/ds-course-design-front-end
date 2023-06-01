@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { Layout, Col, Row, Slider, Nav } from "@douyinfe/semi-ui";
+import { Layout, Col, Row, Slider, Nav, Toast } from "@douyinfe/semi-ui";
 import {
   HashRouter as Router,
   Route,
@@ -41,9 +41,19 @@ export function App(props) {
   const location = useLocation();
   const timeChangeHandler = () => {
     if (timeState == "forward") {
-      let timeStamp = date.getTime() + 1000 * 60 * 60 * 24;
-      setDate(new Date(timeStamp));
+      let timeStamp = date.getTime() + 1000 * 60 * 10;
+      for (let item of bus.activityArray) {
+        if (
+          item.start * 1000 - bus.date.getTime() <= 1000 * 60 * 60 &&
+          item.start * 1000 - bus.date.getTime() >= 1000 * 60 * 40
+        ) {
+          Toast.info(item.title + "快要开始了！");
+          // console.log(item);
+        }
+      }
       bus.date = date;
+      setDate(new Date(timeStamp));
+
       timeChangeEmiiter.emit("timeChange");
     } else if (timeState == "backward") {
       let timeStamp = date.getTime() - 1000 * 60 * 60 * 24;
@@ -54,7 +64,7 @@ export function App(props) {
   };
   const navigate = useNavigate();
   const [userData, setUserData] = useUserData();
-  var timeChangeInterval = setInterval(timeChangeHandler, 1000);
+  var timeChangeInterval = setInterval(timeChangeHandler, 500);
   useEffect(() => {
     return function cleanup() {
       clearInterval(timeChangeInterval);
