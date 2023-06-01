@@ -16,7 +16,6 @@ myAxios.interceptors.request.use(
     // config.data = JSON.stringify(config.data)
     config.headers = {
       "Content-Type": "application/json",
-      "Authorization": "123",
     };
     return config;
   },

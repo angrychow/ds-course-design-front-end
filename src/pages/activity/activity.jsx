@@ -27,6 +27,8 @@ import { bus } from "../../bus";
 import "./activity.css";
 import { myAxios } from "../../utils/fetch";
 import { InputNumber } from "@douyinfe/semi-ui/lib/es/inputNumber";
+import { useUserData } from "../../utils/useUserData";
+import { setToken } from "../../utils/fetch";
 
 export function ActivityManage() {
   const optionTimeSelect = [];
@@ -57,6 +59,18 @@ export function ActivityManage() {
   const arrangeStart = useRef([]);
   const arrangeEnd = useRef([]);
   const [conflict, setConflict] = useState(null);
+  const [userData, setUserData] = useUserData();
+  useEffect(() => {
+    setToken();
+    myAxios.get("/user/verify").then((data) => {
+      console.log(data);
+      setUserData({
+        name: data.name,
+        id: data.id,
+        isAdmin: data.is_admin == 0 ? false : true,
+      });
+    });
+  }, []);
   var findActivity = null;
   const arrangeTimeList = useMemo(() => {
     const ret = [];
@@ -141,14 +155,14 @@ export function ActivityManage() {
         return _item;
       });
       console.log(data.activities);
-      if (bus.isAdmin) {
+      if (userData.isAdmin) {
         setActivityArray(data.activities);
         setFilteredArray(data.activities);
       } else {
         var filterData = data.activities.filter((item) => {
           let hasId = false;
           for (let i of item.groupArray) {
-            if (i == bus.id) {
+            if (i == userData.id) {
               hasId = true;
               break;
             }
@@ -161,7 +175,7 @@ export function ActivityManage() {
       }
     });
   };
-  useEffect(getNewData, []);
+  useEffect(getNewData, [userData]);
   function handleAdd() {
     isUpdate.current = false;
     handleClick(-1);
@@ -259,7 +273,7 @@ export function ActivityManage() {
               用户：{item.toString()}在时间段
               {new Date(
                 arrangeValue.current.times[index][0] * 1000
-              ).toLocaleDateString() +
+              ).toDateString() +
                 " " +
                 new Date(
                   arrangeValue.current.times[index][0] * 1000
@@ -268,7 +282,7 @@ export function ActivityManage() {
               -{" "}
               {new Date(
                 arrangeValue.current.times[index][1] * 1000
-              ).toLocaleDateString() +
+              ).toDateString() +
                 " " +
                 new Date(
                   arrangeValue.current.times[index][1] * 1000
@@ -284,7 +298,7 @@ export function ActivityManage() {
               时间段
               {new Date(
                 arrangeValue.current.times[index][0] * 1000
-              ).toLocaleDateString() +
+              ).toDateString() +
                 " " +
                 new Date(
                   arrangeValue.current.times[index][0] * 1000
@@ -293,7 +307,7 @@ export function ActivityManage() {
               -{" "}
               {new Date(
                 arrangeValue.current.times[index][1] * 1000
-              ).toLocaleDateString() +
+              ).toDateString() +
                 " " +
                 new Date(
                   arrangeValue.current.times[index][1] * 1000
@@ -459,7 +473,7 @@ export function ActivityManage() {
               id: isUpdate.current
                 ? values.id
                 : Math.floor(Math.random() * 100000),
-              groupArray: values.groupArray ? values.groupArray : [bus.id],
+              groupArray: values.groupArray ? values.groupArray : [userData.id],
               placeID: values.placeID ? values.placeID : 1,
               alertPeriod: values.isCycle,
               alertTime:

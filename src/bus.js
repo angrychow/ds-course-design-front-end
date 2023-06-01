@@ -1,6 +1,6 @@
 
 export const bus = {
-  id: 2021211116,
+  id: null,
   embedToken: '',
   date: new Date("2023-03-25 23:50:00"),
   timeState: 'pause',

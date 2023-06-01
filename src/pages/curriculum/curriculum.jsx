@@ -17,6 +17,7 @@ import { myAxios } from "../../utils/fetch";
 export class Curriculum extends React.Component {
   constructor(props) {
     super(props);
+    this.idDiff = 0;
     this.eventText = "";
     this.events = [];
     this.handleClickEvent = this.handleClickEvent.bind(this);
@@ -43,6 +44,7 @@ export class Curriculum extends React.Component {
       isCheckedPlace: false,
       isCheckedAlert: false,
       placesArray: bus.places,
+      // idDiff:
       events: activityMock.map((item) => {
         return {
           key: Number.toString(item.id),
@@ -64,7 +66,12 @@ export class Curriculum extends React.Component {
       }),
     };
     timeChangeEmiiter.addListener("timeChange", this.handleTimeChange);
-    this.handleGetNewEvents();
+  }
+  componentDidUpdate() {
+    if (this.idDiff != this.props.id) {
+      this.idDiff = this.props.id;
+      this.handleGetNewEvents();
+    }
   }
 
   handleGetNewEvents() {
@@ -84,11 +91,11 @@ export class Curriculum extends React.Component {
         end: new Date(2024, bus.date.getMonth(), 2).getTime() / 1000,
       })
       .then((data) => {
-        console.log(data);
+        console.log(data, this.props.id);
         var filterData = data.activities.filter((item) => {
           let hasId = false;
           for (let i of item.groupArray) {
-            if (i == bus.id) {
+            if (i == this.props.id) {
               hasId = true;
               break;
             }
@@ -278,7 +285,9 @@ export class Curriculum extends React.Component {
                   text: values.activityName,
                   cycleType: values.isCycle,
                   id: Math.floor(Math.random() * 100000),
-                  groupArray: values.groupArray ? values.groupArray : [bus.id],
+                  groupArray: values.groupArray
+                    ? values.groupArray
+                    : [this.props.id],
                   placeID: values.placeID ? values.placeID : 1,
                   alertPeriod: values.isCycle,
                   alertTime:
@@ -462,6 +471,7 @@ export class Curriculum extends React.Component {
   }
 
   render() {
+    // console.log(this.props);
     return (
       <div
         style={{

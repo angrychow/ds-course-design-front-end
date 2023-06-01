@@ -18,6 +18,9 @@ import { ActivityManage } from './pages/activity/activity';
 import { CourseManage } from './pages/course/course';
 import { PersonManage } from './pages/person/person';
 import { Terminal } from './pages/log/log';
+import { useUserData } from './utils/useUserData';
+import { CurriculumWrap } from './pages/curriculum-wrap/curriculum-wrap';
+
 
 const router = createHashRouter([
   {
@@ -28,34 +31,34 @@ const router = createHashRouter([
       element: <NavigateActivity />
     }, {
       path: 'curriculum',
-      element: <Curriculum/>
+      element: <CurriculumWrap />
     }, {
       path: 'temporary',
-      element: <Temporary/>
-      }, {
+      element: <Temporary />
+    }, {
       path: 'activity',
-      element: <ActivityManage/>
-      }, {
+      element: <ActivityManage />
+    }, {
       path: 'course',
       element: <CourseManage />
-      }, {
+    }, {
       path: 'person',
-      element: <PersonManage/>
-      }, {
+      element: <PersonManage />
+    }, {
       path: "log",
-        element:<Terminal />
+      element: <Terminal />
     }]
   },
   {
     path: "login/",
-    element: <Login/>
+    element: <Login />
   }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <RouterProvider router={router} />
-  
+
 );
 
 myAxios.get('/').then((data) => {

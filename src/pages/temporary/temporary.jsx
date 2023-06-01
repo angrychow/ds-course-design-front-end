@@ -24,6 +24,8 @@ import { activityMock } from "./temporary-mock";
 import { bus } from "../../bus";
 import "./temporary.css";
 import { myAxios } from "../../utils/fetch";
+import { useUserData } from "../../utils/useUserData";
+import { setToken } from "../../utils/fetch";
 
 export function Temporary() {
   const isUpdate = useRef(false);
@@ -35,6 +37,18 @@ export function Temporary() {
   const [isCheckedCycle, setCheckedCycle] = useState(false);
   const [isCheckedGroup, setCheckedGroup] = useState(false);
   const [isCheckedPlace, setCheckedPlace] = useState(false);
+  const [userData, setUserData] = useUserData();
+  useEffect(() => {
+    setToken();
+    myAxios.get("/user/verify").then((data) => {
+      console.log(data);
+      setUserData({
+        name: data.name,
+        id: data.id,
+        isAdmin: data.is_admin == 0 ? false : true,
+      });
+    });
+  }, []);
   const [showModal, setShowModal] = useState(false);
   const [alert, setAlert] = useState(false);
   const [initData, setInitData] = useState({});
@@ -54,14 +68,14 @@ export function Temporary() {
       data.activities = data.activities.filter((item) => {
         return item.activityType == 2;
       });
-      if (bus.isAdmin) {
+      if (userData.isAdmin) {
         setActivityArray(data.activities);
         setFilteredArray(data.activities);
       } else {
         var filterData = data.activities.filter((item) => {
           let hasId = false;
           for (let i of item.groupArray) {
-            if (i == bus.id) {
+            if (i == userData.id) {
               hasId = true;
               break;
             }
@@ -74,8 +88,7 @@ export function Temporary() {
       }
     });
   };
-  // getNewData();
-  useEffect(getNewData, []);
+  useEffect(getNewData, [userData]);
   function handleAdd() {
     handleClick(-1);
   }
@@ -186,7 +199,7 @@ export function Temporary() {
               id: isUpdate.current
                 ? values.id
                 : Math.floor(Math.random() * 100000),
-              groupArray: [bus.id],
+              groupArray: [userData.id],
               placeID: values.placeID ? values.placeID : 1,
               alertPeriod: 0,
               alertTime:

@@ -161,17 +161,17 @@ export class NavigateActivity extends React.Component {
         >
           {this.state.isLoadMap && (
             <ReactCharts
-              style={{ height: "125%", width: "80%" }}
+              style={{ height: "125%", width: "50%" }}
               option={this.state.mapOption}
             />
           )}
           <div
             style={{
-              width: "40%",
+              width: "50%",
               height: "100%",
               display: "flex",
               flexFlow: "column",
-              placeContent: "center",
+              placeItems: "center",
             }}
           >
             <div
@@ -182,7 +182,7 @@ export class NavigateActivity extends React.Component {
                 overflowX: "hidden",
                 display: "flex",
                 flexFlow: "row",
-                placeContent: "center",
+                placeItems: "center",
               }}
               className="scrollbarContainer"
             >
@@ -196,8 +196,15 @@ export class NavigateActivity extends React.Component {
               >
                 {(formState, value, formAPI) => (
                   <>
-                    <Row>
-                      <Col span={12}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexFlow: "column",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    >
+                      <div>
                         {/* 设置一个开始导航的按钮和一个输入数字的框用来选择有几个途径点 */}
                         <Form.InputNumber
                           field="num"
@@ -215,16 +222,14 @@ export class NavigateActivity extends React.Component {
                             });
                           }}
                         />
-                      </Col>
-                    </Row>
-                    {/* 按照navNum简历对应数量的地点选择框 */}
-                    {Array.from(
-                      { length: this.state.navNum },
-                      (_, i) => i + 1
-                    ).map((item) => {
-                      return (
-                        <Row key={item}>
-                          <Col span={12}>
+                      </div>
+                      {/* 按照navNum简历对应数量的地点选择框 */}
+                      {Array.from(
+                        { length: this.state.navNum },
+                        (_, i) => i + 1
+                      ).map((item) => {
+                        return (
+                          <div>
                             <Form.Select
                               key={item}
                               name={`place${item}`}
@@ -236,35 +241,11 @@ export class NavigateActivity extends React.Component {
                             >
                               {optionJSX}
                             </Form.Select>
-                          </Col>
-                        </Row>
-                      );
-                    })}
-                    {/* <Row>
-                    <Col span={12}>
-                      <Form.Select
-                        field="startPlace"
-                        label="出发地点"
-                        style={{
-                          width: "90%",
-                        }}
-                      >
-                        {optionJSX}
-                      </Form.Select>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Select
-                        field="endPlace"
-                        defaultValue={this.state.placeArray[0]}
-                        label="结束地点"
-                        style={{
-                          width: "90%",
-                        }}
-                      >
-                        {optionJSX}
-                      </Form.Select>
-                    </Col>
-                  </Row> */}
+                          </div>
+                        );
+                      })}
+                    </div>
+
                     <Row>
                       <Button
                         theme="solid"

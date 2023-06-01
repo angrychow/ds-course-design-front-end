@@ -49,7 +49,6 @@ export function App(props) {
           item.alert
         ) {
           Toast.info(item.title + "快要开始了！");
-          // console.log(item);
         }
       }
       bus.date = date;
@@ -57,7 +56,7 @@ export function App(props) {
 
       timeChangeEmiiter.emit("timeChange");
     } else if (timeState == "backward") {
-      let timeStamp = date.getTime() - 1000 * 60 * 60 * 24;
+      let timeStamp = date.getTime() - 1000 * 60 * 30;
       setDate(new Date(timeStamp));
       bus.date = date;
       timeChangeEmiiter.emit("timeChange");
@@ -65,12 +64,15 @@ export function App(props) {
   };
   const navigate = useNavigate();
   const [userData, setUserData] = useUserData();
-  var timeChangeInterval = setInterval(timeChangeHandler, 500);
+  var timeChangeInterval = setInterval(timeChangeHandler, 250);
   useEffect(() => {
     return function cleanup() {
       clearInterval(timeChangeInterval);
     };
   });
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
   useEffect(() => {
     let token = localStorage["token"];
     if (
@@ -88,12 +90,12 @@ export function App(props) {
         .then((data) => {
           console.log(data);
           bus.isAdmin = data.is_admin == 0 ? false : true;
-          setIsAdmin(bus.isAdmin);
           setUserData({
             name: data.name,
             id: data.id,
             isAdmin: data.is_admin == 0 ? false : true,
           });
+          setIsAdmin(bus.isAdmin);
           bus.id = data.id;
         })
         .catch((err) => {
