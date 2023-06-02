@@ -194,7 +194,7 @@ export class NavigateActivity extends React.Component {
                 validateFields={this.validatePlaceSelect}
                 className="scrollbarContainer"
               >
-                {(formState, value, formAPI) => (
+                {(formState, formAPI, values) => (
                   <>
                     <div
                       style={{
@@ -204,25 +204,81 @@ export class NavigateActivity extends React.Component {
                         height: "100%",
                       }}
                     >
-                      <div>
-                        {/* 设置一个开始导航的按钮和一个输入数字的框用来选择有几个途径点 */}
-                        <Form.InputNumber
-                          field="num"
-                          label="导航点个数"
+                      <Row>
+                        <div
                           style={{
-                            width: "90%",
+                            display: "flex",
+                            flexFlow: "row",
+                            width: "100%",
+                            placeItems: "space-evenly",
                           }}
-                          min={2}
-                          max={bus.places.length}
-                          defaultValue={2}
-                          onChange={(value) => {
-                            this.setState((prev) => {
-                              prev.navNum = value;
-                              return prev;
-                            });
-                          }}
-                        />
-                      </div>
+                        >
+                          {/* 设置一个开始导航的按钮和一个输入数字的框用来选择有几个途径点 */}
+                          <div
+                            style={{
+                              width: "35%",
+                            }}
+                          >
+                            <Form.InputNumber
+                              field="num"
+                              label="导航点个数"
+                              min={2}
+                              max={bus.places.length}
+                              defaultValue={2}
+                              placeholder={2}
+                              onChange={(value) => {
+                                this.setState((prev) => {
+                                  prev.navNum = value;
+                                  return prev;
+                                });
+                              }}
+                            />
+                          </div>
+                          <div
+                            style={{
+                              marginLeft: "15px",
+                              height: "100%",
+                            }}
+                          >
+                            {/* 一个是否回到起点的开关 */}
+                            <Form.Switch field="ret" label="回程" />
+                          </div>
+                          <div
+                            style={{
+                              width: "calc(40% - 25px)",
+                              marginLeft: "10px",
+                            }}
+                          >
+                            <Form.Select
+                              name="vehicle"
+                              field="vehicle"
+                              label="交通工具"
+                              defaultValue="0"
+                              placeholder="步行"
+                              style={{
+                                width: "100%",
+                              }}
+                              // 如果选择了步行,disable掉回程开关
+                              onChange={(value) => {
+                                if (value == 0) {
+                                  // TODO: 这里有bug, formAPI undefined
+                                  // formAPI.setValue("ret", false);
+                                  // formAPI.setTouched("ret", true);
+                                }
+                              }}
+                            >
+                              <Form.Select.Option value="0">
+                                步行
+                              </Form.Select.Option>
+                              <Form.Select.Option value="1">
+                                自行车
+                              </Form.Select.Option>
+                            </Form.Select>
+                          </div>
+                        </div>
+                        {/* 一个选择框用来选择交通工具 */}
+                      </Row>
+
                       {/* 按照navNum简历对应数量的地点选择框 */}
                       {Array.from(
                         { length: this.state.navNum },
@@ -247,74 +303,89 @@ export class NavigateActivity extends React.Component {
                     </div>
 
                     <Row>
-                      <Button
-                        theme="solid"
-                        type="primary"
+                      <div
                         style={{
-                          width: "70px",
-                        }}
-                        htmlType="submit"
-                        onClick={() => {
-                          console.log(formState.values);
-                          myAxios
-                            .post("/map/navigate", formState.values, {
-                              params: Object.values(formState.values).reduce(
-                                (acc, cur) => {
-                                  acc["nodes"].push(cur.id);
-                                  return acc;
-                                },
-                                { nodes: [] }
-                              ),
-                            })
-                            .then((data) => {
-                              const nodes = data.route;
-                              const path = [];
-                              const pathArrays = [];
-
-                              for (const node of nodes) {
-                                path.push([
-                                  this.state.placeObj[node].x,
-                                  this.state.placeObj[node].y,
-                                ]);
-                                if (node == nodes[0]) {
-                                  pathArrays.push({
-                                    content: this.state.placeObj[node].name,
-                                    type: "ongoing",
-                                  });
-                                } else if (node == nodes[nodes.length - 1]) {
-                                  pathArrays.push({
-                                    content: this.state.placeObj[node].name,
-                                    type: "success",
-                                  });
-                                } else {
-                                  pathArrays.push({
-                                    content: this.state.placeObj[node].name,
-                                    color: "pink",
-                                  });
-                                }
-                              }
-
-                              this.setState({
-                                pathArray: pathArrays,
-                                mapOption: {
-                                  ...this.state.mapOption,
-                                  series: [
-                                    {
-                                      ...this.state.mapOption.series[0],
-                                      data: [
-                                        {
-                                          coords: path,
-                                        },
-                                      ],
-                                    },
-                                  ],
-                                },
-                              });
-                            });
+                          display: "flex",
+                          flexFlow: "row",
                         }}
                       >
-                        查询
-                      </Button>
+                        <Button
+                          theme="solid"
+                          type="primary"
+                          style={{
+                            width: "70px",
+                          }}
+                          htmlType="submit"
+                          onClick={() => {
+                            console.log(formState.values);
+                            myAxios
+                              .post("/map/navigate", formState.values, {
+                                params: Object.values(formState.values).reduce(
+                                  (acc, cur) => {
+                                    acc["nodes"].push(cur.id);
+                                    return acc;
+                                  },
+                                  {
+                                    nodes: [],
+                                    vehicle: formState.values.vehicle,
+                                    ret: formState.values.ret?1:0,
+                                  }
+                                ),
+                              })
+                              .then((data) => {
+                                const nodes = data.route;
+                                const path = [];
+                                const pathArrays = [];
+
+                                for (const node of nodes) {
+                                  path.push([
+                                    this.state.placeObj[node].x,
+                                    this.state.placeObj[node].y,
+                                  ]);
+                                  if (node == nodes[0]) {
+                                    pathArrays.push({
+                                      content: this.state.placeObj[node].name,
+                                      type: "ongoing",
+                                    });
+                                  } else if (node == nodes[nodes.length - 1]) {
+                                    pathArrays.push({
+                                      content: this.state.placeObj[node].name,
+                                      type: "success",
+                                    });
+                                  } else {
+                                    pathArrays.push({
+                                      content: this.state.placeObj[node].name,
+                                      color: "pink",
+                                    });
+                                  }
+                                }
+
+                                this.setState({
+                                  pathArray: pathArrays,
+                                  mapOption: {
+                                    ...this.state.mapOption,
+                                    series: [
+                                      {
+                                        ...this.state.mapOption.series[0],
+                                        data: [
+                                          {
+                                            coords: path,
+                                          },
+                                        ],
+                                        lineStyle: {
+                                          ...this.state.mapOption.series[0].lineStyle,
+                                          color: formState.values["vehicle"]==0? "#c46e54":"#005BC8",
+                                        }
+                                      },
+                                    ],
+                                  },
+                                });
+                              });
+                          }}
+                        >
+                          查询
+                        </Button>
+                      </div>
                     </Row>
                   </>
                 )}
