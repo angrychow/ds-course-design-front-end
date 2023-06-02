@@ -635,6 +635,7 @@ export function ActivityManage() {
                       setCheckedPlace(checked);
                     }}
                     disabled={findActivity}
+                    defaultValue={false}
                   />
                 </Col>
                 <Col span={8} offset={4}>
