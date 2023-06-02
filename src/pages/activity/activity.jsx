@@ -227,12 +227,13 @@ export function ActivityManage() {
       newInitData["conferenceUrl"] = findActivity.conferenceUrl;
       newInitData["placeID"] = findActivity.placeID;
       newInitData["id"] = findActivity.id;
+      newInitData["tag"] = findActivity.tag;
 
       setInitData(newInitData);
     } else {
       setInitData({
         isCycle: 0,
-        isPlace: false,
+        isPlace: true,
         isGroup: false,
         alert: false,
       });
@@ -510,7 +511,7 @@ export function ActivityManage() {
             // Toast.info({
             //   opts: values.toString(),
             // });
-            // console.log(values);
+            console.log(values);
             const nowDate = new Date(
               values.activityDate.getFullYear() +
                 "-" +
@@ -518,13 +519,15 @@ export function ActivityManage() {
                 "-" +
                 values.activityDate.getDate()
             );
-            const examDate = new Date(
-              values.examDate.getFullYear() +
-                "-" +
-                (values.examDate.getMonth() + 1) +
-                "-" +
-                values.examDate.getDate()
-            );
+            const examDate = values.examDate
+              ? new Date(
+                  values.examDate.getFullYear() +
+                    "-" +
+                    (values.examDate.getMonth() + 1) +
+                    "-" +
+                    values.examDate.getDate()
+                )
+              : new Date();
             let postValue = {
               ...values,
               start:
@@ -608,13 +611,7 @@ export function ActivityManage() {
               </Row>
               <Row style={{ width: "100%" }}>
                 <Col span={8} offset={4}>
-                  <Form.Select
-                    field="isCycle"
-                    label="是否为周期事件"
-                    onChange={(checked) => {
-                      this.setState({ isCheckedCycle: checked });
-                    }}
-                  >
+                  <Form.Select field="isCycle" label="是否为周期事件">
                     {optionCycles}
                   </Form.Select>
                 </Col>
@@ -756,6 +753,15 @@ export function ActivityManage() {
                   </Form.Select>
                 </Row>
               )}
+              <Row style={{ width: "70%" }}>
+                <Form.Input
+                  field="tag"
+                  label="类型"
+                  style={{
+                    width: "100%",
+                  }}
+                ></Form.Input>
+              </Row>
               <Row style={{ width: "60%" }}>
                 <Col span={8}>
                   <Button type="primary" htmlType="submit">
@@ -808,6 +814,11 @@ export function ActivityManage() {
           {record.cycleType == 2 && <>每周事件</>}
         </div>
       ),
+    },
+    {
+      title: "类型",
+      dataIndex: "tag",
+      render: (text, record, index) => <div>{record.tag}</div>,
     },
     {
       title: "地点或 URL",

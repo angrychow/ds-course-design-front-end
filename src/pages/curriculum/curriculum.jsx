@@ -55,7 +55,7 @@ export class Curriculum extends React.Component {
             <div
               style={dailyEventStyle}
               onClick={(e) => {
-                this.handleClickEvent(item.text, e);
+                this.handleClickEvent(item, e);
                 e.stopPropagation();
               }}
             >
@@ -159,7 +159,7 @@ export class Curriculum extends React.Component {
                 <div
                   style={dailyEventStyle}
                   onClick={(e) => {
-                    this.handleClickEvent(item.text, e);
+                    this.handleClickEvent(item, e);
                     e.stopPropagation();
                   }}
                 >
@@ -172,8 +172,36 @@ export class Curriculum extends React.Component {
       });
   }
 
-  handleClickEvent(text, e) {
-    Modal.info({ title: "事件详情", footer: <></>, content: text });
+  handleClickEvent(item, e) {
+    Modal.info({
+      title: "事件详情",
+      footer: <></>,
+      content: (
+        <>
+          <div>标题：{item.title}</div>
+          <div>这是一个{item.activityType == 0 ? "课程" : "事件"}</div>
+          <div>
+            开始时间：
+            {new Date(item.start * 1000).toLocaleDateString() +
+              " " +
+              new Date(item.start * 1000).toLocaleTimeString()}
+          </div>
+          <div>
+            结束时间：
+            {new Date(item.end * 1000).toLocaleDateString() +
+              " " +
+              new Date(item.end * 1000).toLocaleTimeString()}
+          </div>
+          <div>类型：{item.tag ? item.tag : "默认类型"}</div>
+          {item.isPlace && (
+            <div>
+              地点：{bus.places.find((_) => _.id == item.placeID)?.name}
+            </div>
+          )}
+          {!item.isPlace && <div>线上会议地址：{item.conferenceUrl}</div>}
+        </>
+      ),
+    });
   }
 
   handleTimeChange(date) {

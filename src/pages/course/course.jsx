@@ -5,9 +5,6 @@ import {
   IconWrench,
   IconSearch,
 } from "@douyinfe/semi-icons";
-import { setToken } from "../../utils/fetch";
-import { useUserData } from "../../utils/useUserData";
-
 import { IllustrationNoContent } from "@douyinfe/semi-illustrations";
 import {
   Button,
@@ -30,6 +27,8 @@ import { bus } from "../../bus";
 import "./course.css";
 import { myAxios } from "../../utils/fetch";
 import { InputNumber } from "@douyinfe/semi-ui/lib/es/inputNumber";
+import { useUserData } from "../../utils/useUserData";
+import { setToken } from "../../utils/fetch";
 
 export function CourseManage() {
   const optionTimeSelect = [];
@@ -59,8 +58,11 @@ export function CourseManage() {
   const arrangeDate = useRef([]);
   const arrangeStart = useRef([]);
   const arrangeEnd = useRef([]);
+  const ____ = useRef([]);
   const [conflict, setConflict] = useState(null);
   const [userData, setUserData] = useUserData();
+  const [todayConflict, setTodayConflict] = useState(null);
+  const [isTest, setTest] = useState(false);
   useEffect(() => {
     setToken();
     myAxios.get("/user/verify").then((data) => {
@@ -228,15 +230,28 @@ export function CourseManage() {
       newInitData["conferenceUrl"] = findActivity.conferenceUrl;
       newInitData["placeID"] = findActivity.placeID;
       newInitData["id"] = findActivity.id;
+      newInitData["tag"] = findActivity.tag;
+      newInitData["startExamHour"] = new Date(
+        findActivity.examStartTime * 1000
+      ).getHours();
+      newInitData["endExamHour"] = new Date(
+        findActivity.examEndTime * 1000
+      ).getHours();
+      newInitData["examPlace"] = findActivity.examPlace;
+
+      if (findActivity.activityType == 0) {
+        setTest(true);
+      }
 
       setInitData(newInitData);
     } else {
       setInitData({
         isCycle: 0,
-        isPlace: false,
+        isPlace: true,
         isGroup: false,
         alert: false,
       });
+      setTest(false);
     }
     console.log(findActivity);
     setShowModal(true);
@@ -265,15 +280,63 @@ export function CourseManage() {
     cycleType: 0,
     times: [],
   });
+  const todayConflictJSX = useMemo(() => {
+    if (!todayConflict) return <>🤬</>;
+    const idDate = new Date();
+    var count = 0;
+    const ret = [];
+    console.log(todayConflict);
+    console.log(____.current);
+    for (let i = 0; i < ____.current.length; i++) {
+      if (todayConflict[i].length == 0) {
+        ret.push(
+          <div key={idDate.getTime() + i}>
+            今日{new Date(____.current[i][0] * 1000).getHours()}时-
+            {new Date(____.current[i][1] * 1000).getHours()}
+            时可以安排
+          </div>
+        );
+        if (++count == 3) break;
+      }
+    }
+    if (ret.length == 0) ret.push(<>今天都让你给冲突完了🤬</>);
+    return ret;
+  }, [todayConflict]);
   const conflictJSX = useMemo(() => {
+    const idDate = new Date();
     if (!conflict) return <></>;
     if (conflict.length == 0) return <>所有时间段都可行</>;
-    else
-      return conflict.map((item, index) => {
+    else {
+      const ret = conflict.map((item, index) => {
         if (item.length != 0) {
           return (
-            <div key={item}>
+            <div key={idDate.getTime() + index}>
               用户：{item.toString()}在时间段
+              {new Date(
+                arrangeValue.current.times[index][0] * 1000
+              ).toLocaleDateString() +
+                " " +
+                new Date(
+                  arrangeValue.current.times[index][0] * 1000
+                ).getHours() +
+                " 时"}{" "}
+              -{" "}
+              {new Date(
+                arrangeValue.current.times[index][1] * 1000
+              ).toLocaleDateString() +
+                " " +
+                new Date(
+                  arrangeValue.current.times[index][1] * 1000
+                ).getHours() +
+                " " +
+                " 时"}
+              有冲突。
+            </div>
+          );
+        } else {
+          return (
+            <div key={idDate.getTime() + index}>
+              时间段
               {new Date(
                 arrangeValue.current.times[index][0] * 1000
               ).toDateString() +
@@ -290,32 +353,15 @@ export function CourseManage() {
                 new Date(
                   arrangeValue.current.times[index][1] * 1000
                 ).getHours() +
-                " " +
                 " 时"}
-              有冲突。
+              无冲突。
             </div>
           );
         }
-        return (
-          <div key={item}>
-            时间段
-            {new Date(
-              arrangeValue.current.times[index][0] * 1000
-            ).toDateString() +
-              " " +
-              new Date(arrangeValue.current.times[index][0] * 1000).getHours() +
-              " 时"}{" "}
-            -{" "}
-            {new Date(
-              arrangeValue.current.times[index][1] * 1000
-            ).toDateString() +
-              " " +
-              new Date(arrangeValue.current.times[index][1] * 1000).getHours() +
-              " 时"}
-            无冲突。
-          </div>
-        );
       });
+      console.log(ret);
+      return ret;
+    }
   }, [conflict]);
 
   const arrangeModalContent = (
@@ -381,11 +427,7 @@ export function CourseManage() {
               arrangeValue.current.times = [];
               for (let i = 0; i < arrangeDate.current.length; i++) {
                 let _ = arrangeDate.current[i];
-                let __ = new Date(
-                  _.getFullYear(),
-                  _.getMonth() + 1,
-                  _.getDate()
-                );
+                let __ = new Date(_.getFullYear(), _.getMonth(), _.getDate());
                 arrangeValue.current.times.push([
                   (__.getTime() + arrangeStart.current[i] * 60 * 60 * 1000) /
                     1000,
@@ -400,6 +442,26 @@ export function CourseManage() {
                   console.log(res.conflicts);
                   setConflict(res.conflicts);
                 });
+              const ___ = new Date(
+                bus.date.getFullYear(),
+                bus.date.getMonth(),
+                bus.date.getDate()
+              );
+              ____.current = [];
+              for (let i = 6; i < 23; i++) {
+                for (let j = i + 1; j < 23; j++) {
+                  ____.current.push([
+                    (___.getTime() + i * 60 * 60 * 1000) / 1000,
+                    (___.getTime() + j * 60 * 60 * 1000) / 1000,
+                  ]);
+                }
+              }
+              const _arrangeValue = { ...arrangeValue.current };
+              _arrangeValue.times = ____.current;
+              myAxios.post("/event/arrange", _arrangeValue).then((res) => {
+                console.log(res.conflicts);
+                setTodayConflict(res.conflicts);
+              });
             }}
           >
             查询
@@ -423,6 +485,17 @@ export function CourseManage() {
           }}
         >
           {conflictJSX}
+        </div>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexFlow: "column",
+            placeContent: "center center",
+            margin: "10px",
+          }}
+        >
+          {todayConflictJSX}
         </div>
       </div>
     </>
@@ -453,7 +526,7 @@ export function CourseManage() {
             // Toast.info({
             //   opts: values.toString(),
             // });
-            // console.log(values);
+            console.log(values);
             const nowDate = new Date(
               values.activityDate.getFullYear() +
                 "-" +
@@ -461,11 +534,26 @@ export function CourseManage() {
                 "-" +
                 values.activityDate.getDate()
             );
+            const examDate = values.examDate
+              ? new Date(
+                  values.examDate.getFullYear() +
+                    "-" +
+                    (values.examDate.getMonth() + 1) +
+                    "-" +
+                    values.examDate.getDate()
+                )
+              : new Date();
             let postValue = {
               ...values,
               start:
                 (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
               end: (nowDate.getTime() + 1000 * 60 * 60 * values.endHour) / 1000,
+              examStartTime:
+                (examDate.getTime() + 1000 * 60 * 60 * values.startExamHour) /
+                1000,
+              examEndTime:
+                (examDate.getTime() + 1000 * 60 * 60 * values.endExamHour) /
+                1000,
               title: values.activityName,
               text: values.activityName,
               cycleType: values.isCycle,
@@ -501,7 +589,7 @@ export function CourseManage() {
               });
           }}
         >
-          {({ formState, values, formAPI }) => (
+          {({ formState, values, formApi }) => (
             <>
               <Row style={{ width: "70%" }}>
                 <Form.DatePicker
@@ -538,13 +626,7 @@ export function CourseManage() {
               </Row>
               <Row style={{ width: "100%" }}>
                 <Col span={8} offset={4}>
-                  <Form.Select
-                    field="isCycle"
-                    label="是否为周期事件"
-                    onChange={(checked) => {
-                      this.setState({ isCheckedCycle: checked });
-                    }}
-                  >
+                  <Form.Select field="isCycle" label="是否为周期事件">
                     {optionCycles}
                   </Form.Select>
                 </Col>
@@ -620,6 +702,11 @@ export function CourseManage() {
                   style={{
                     width: "100%",
                   }}
+                  onSelect={(value) => {
+                    // console.log(value);
+                    if (value == 0) setTest(true);
+                    else setTest(false);
+                  }}
                 >
                   {optionType}
                 </Form.Select>
@@ -628,6 +715,63 @@ export function CourseManage() {
                 <Form.Input
                   field="activityName"
                   label="事件名称"
+                  style={{
+                    width: "100%",
+                  }}
+                ></Form.Input>
+              </Row>
+              {isTest && (
+                <Row style={{ width: "100%" }}>
+                  <Col span={11}>
+                    <Form.Select
+                      field="startExamHour"
+                      label="开始考试时间"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionTimeSelect}
+                    </Form.Select>
+                  </Col>
+                  <Col span={11} offset={2}>
+                    <Form.Select
+                      field="endExamHour"
+                      label="结束考试时间"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionTimeSelect}
+                    </Form.Select>
+                  </Col>
+                </Row>
+              )}
+              {isTest && (
+                <Row style={{ width: "70%" }}>
+                  <Form.DatePicker
+                    field="examDate"
+                    label="考试日期"
+                    style={{
+                      width: "100%",
+                    }}
+                  ></Form.DatePicker>
+                </Row>
+              )}
+              {isTest && (
+                <Row style={{ width: "100%" }}>
+                  <Form.Select
+                    style={{ width: "100%" }}
+                    label="考试地点"
+                    field="examPlace"
+                  >
+                    {optionPlaces}
+                  </Form.Select>
+                </Row>
+              )}
+              <Row style={{ width: "70%" }}>
+                <Form.Input
+                  field="tag"
+                  label="类型"
                   style={{
                     width: "100%",
                   }}
@@ -681,8 +825,24 @@ export function CourseManage() {
       render: (text, record, index) => (
         <div>
           {record.cycleType == 0 && <>不重复</>}
-          {record.cycleType == 1 && <>每日课程</>}
-          {record.cycleType == 2 && <>每周课程</>}
+          {record.cycleType == 1 && <>每日事件</>}
+          {record.cycleType == 2 && <>每周事件</>}
+        </div>
+      ),
+    },
+    {
+      title: "类型",
+      dataIndex: "tag",
+      render: (text, record, index) => <div>{record.tag}</div>,
+    },
+    {
+      title: "考试时间",
+      dataIndex: "tag",
+      render: (text, record, index) => (
+        <div>
+          {new Date(record.examStartTime * 1000).toLocaleString() +
+            " - " +
+            new Date(record.examEndTime * 1000).toLocaleTimeString()}
         </div>
       ),
     },
@@ -697,17 +857,23 @@ export function CourseManage() {
             maxWidth: "500px",
           }}
         >
-          {(() => {
-            if (record.isPlace) {
-              if (places.find((item) => item.id == record.placeID)) {
-                return places.find((item) => item.id == record.placeID).name;
+          {
+            /* {record.isPlace
+            ? // ? places.find((item) => item.id == record.placeID).name
+              record.placeID
+            : record.conferenceUrl} */
+            (() => {
+              if (record.isPlace) {
+                if (places.find((item) => item.id == record.placeID)) {
+                  return places.find((item) => item.id == record.placeID).name;
+                } else {
+                  return record.placeID;
+                }
               } else {
-                return record.placeID;
+                return record.conferenceUrl;
               }
-            } else {
-              return record.conferenceUrl;
-            }
-          })()}
+            })()
+          }
         </div>
       ),
     },
