@@ -186,7 +186,7 @@ export function App(props) {
     }
   }, []);
 
-  // console.log(location);
+  console.log(location);
 
   const navList = useMemo(() => {
     console.log(isAdmin);
@@ -434,6 +434,7 @@ export function App(props) {
             // onSelect={(data) => console.log("trigger onSelect: ", data)}
             // onClick={(data) => console.log("trigger onClick: ", data)}
             defaultSelectedKeys={location.pathname.split("/")}
+            selectedKeys={[location.pathname.slice(1)]}
           />
         </Sider>
         <Content
