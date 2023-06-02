@@ -194,7 +194,7 @@ export class NavigateActivity extends React.Component {
                 validateFields={this.validatePlaceSelect}
                 className="scrollbarContainer"
               >
-                {({formState, values, formApi}) => (
+                {({ formState, values, formApi }) => (
                   <>
                     <div
                       style={{
@@ -254,6 +254,7 @@ export class NavigateActivity extends React.Component {
                               field="vehicle"
                               label="交通工具"
                               defaultValue="0"
+                              initValue={"0"}
                               placeholder="步行"
                               style={{
                                 width: "100%",
@@ -298,7 +299,11 @@ export class NavigateActivity extends React.Component {
                               }}
                               initValue={
                                 item == this.state.navNum && bus.setDestId != -1
-                                  ? bus.setDestId
+                                  ? (() => {
+                                      let ret = bus.setDestId;
+                                      bus.setDestId = -1;
+                                      return ret;
+                                    })()
                                   : null
                               }
                             >

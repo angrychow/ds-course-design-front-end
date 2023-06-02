@@ -2,7 +2,7 @@
 export const bus = {
   id: null,
   embedToken: '',
-  date: new Date("2023-03-25 23:50:00"),
+  date: new Date(),
   timeState: 'pause',
   places: [
     {

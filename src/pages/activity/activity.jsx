@@ -58,8 +58,11 @@ export function ActivityManage() {
   const arrangeDate = useRef([]);
   const arrangeStart = useRef([]);
   const arrangeEnd = useRef([]);
+  const ____ = useRef([]);
   const [conflict, setConflict] = useState(null);
   const [userData, setUserData] = useUserData();
+  const [todayConflict, setTodayConflict] = useState(null);
+  const [isTest, setTest] = useState(false);
   useEffect(() => {
     setToken();
     myAxios.get("/user/verify").then((data) => {
@@ -261,6 +264,28 @@ export function ActivityManage() {
     cycleType: 0,
     times: [],
   });
+  const todayConflictJSX = useMemo(() => {
+    if (!todayConflict) return <>🤬</>;
+    const idDate = new Date();
+    var count = 0;
+    const ret = [];
+    console.log(todayConflict);
+    console.log(____.current);
+    for (let i = 0; i < ____.current.length; i++) {
+      if (todayConflict[i].length == 0) {
+        ret.push(
+          <div key={idDate.getTime() + i}>
+            今日{new Date(____.current[i][0] * 1000).getHours()}时-
+            {new Date(____.current[i][1] * 1000).getHours()}
+            时可以安排
+          </div>
+        );
+        if (++count == 3) break;
+      }
+    }
+    if (ret.length == 0) ret.push(<>今天都让你给冲突完了🤬</>);
+    return ret;
+  }, [todayConflict]);
   const conflictJSX = useMemo(() => {
     const idDate = new Date();
     if (!conflict) return <></>;
@@ -273,7 +298,7 @@ export function ActivityManage() {
               用户：{item.toString()}在时间段
               {new Date(
                 arrangeValue.current.times[index][0] * 1000
-              ).toDateString() +
+              ).toLocaleDateString() +
                 " " +
                 new Date(
                   arrangeValue.current.times[index][0] * 1000
@@ -282,7 +307,7 @@ export function ActivityManage() {
               -{" "}
               {new Date(
                 arrangeValue.current.times[index][1] * 1000
-              ).toDateString() +
+              ).toLocaleDateString() +
                 " " +
                 new Date(
                   arrangeValue.current.times[index][1] * 1000
@@ -401,6 +426,26 @@ export function ActivityManage() {
                   console.log(res.conflicts);
                   setConflict(res.conflicts);
                 });
+              const ___ = new Date(
+                bus.date.getFullYear(),
+                bus.date.getMonth(),
+                bus.date.getDate()
+              );
+              ____.current = [];
+              for (let i = 6; i < 23; i++) {
+                for (let j = i + 1; j < 23; j++) {
+                  ____.current.push([
+                    (___.getTime() + i * 60 * 60 * 1000) / 1000,
+                    (___.getTime() + j * 60 * 60 * 1000) / 1000,
+                  ]);
+                }
+              }
+              const _arrangeValue = { ...arrangeValue.current };
+              _arrangeValue.times = ____.current;
+              myAxios.post("/event/arrange", _arrangeValue).then((res) => {
+                console.log(res.conflicts);
+                setTodayConflict(res.conflicts);
+              });
             }}
           >
             查询
@@ -424,6 +469,17 @@ export function ActivityManage() {
           }}
         >
           {conflictJSX}
+        </div>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexFlow: "column",
+            placeContent: "center center",
+            margin: "10px",
+          }}
+        >
+          {todayConflictJSX}
         </div>
       </div>
     </>
@@ -462,11 +518,24 @@ export function ActivityManage() {
                 "-" +
                 values.activityDate.getDate()
             );
+            const examDate = new Date(
+              values.examDate.getFullYear() +
+                "-" +
+                (values.examDate.getMonth() + 1) +
+                "-" +
+                values.examDate.getDate()
+            );
             let postValue = {
               ...values,
               start:
                 (nowDate.getTime() + 1000 * 60 * 60 * values.startHour) / 1000,
               end: (nowDate.getTime() + 1000 * 60 * 60 * values.endHour) / 1000,
+              examStartTime:
+                (examDate.getTime() + 1000 * 60 * 60 * values.startExamHour) /
+                1000,
+              examEndTime:
+                (examDate.getTime() + 1000 * 60 * 60 * values.endExamHour) /
+                1000,
               title: values.activityName,
               text: values.activityName,
               cycleType: values.isCycle,
@@ -502,7 +571,7 @@ export function ActivityManage() {
               });
           }}
         >
-          {({ formState, values, formAPI }) => (
+          {({ formState, values, formApi }) => (
             <>
               <Row style={{ width: "70%" }}>
                 <Form.DatePicker
@@ -621,6 +690,11 @@ export function ActivityManage() {
                   style={{
                     width: "100%",
                   }}
+                  onSelect={(value) => {
+                    // console.log(value);
+                    if (value == 0) setTest(true);
+                    else setTest(false);
+                  }}
                 >
                   {optionType}
                 </Form.Select>
@@ -634,6 +708,54 @@ export function ActivityManage() {
                   }}
                 ></Form.Input>
               </Row>
+              {isTest && (
+                <Row style={{ width: "100%" }}>
+                  <Col span={11}>
+                    <Form.Select
+                      field="startExamHour"
+                      label="开始考试时间"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionTimeSelect}
+                    </Form.Select>
+                  </Col>
+                  <Col span={11} offset={2}>
+                    <Form.Select
+                      field="endExamHour"
+                      label="结束考试时间"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {optionTimeSelect}
+                    </Form.Select>
+                  </Col>
+                </Row>
+              )}
+              {isTest && (
+                <Row style={{ width: "70%" }}>
+                  <Form.DatePicker
+                    field="examDate"
+                    label="考试日期"
+                    style={{
+                      width: "100%",
+                    }}
+                  ></Form.DatePicker>
+                </Row>
+              )}
+              {isTest && (
+                <Row style={{ width: "100%" }}>
+                  <Form.Select
+                    style={{ width: "100%" }}
+                    label="考试地点"
+                    field="examPlace"
+                  >
+                    {optionPlaces}
+                  </Form.Select>
+                </Row>
+              )}
               <Row style={{ width: "60%" }}>
                 <Col span={8}>
                   <Button type="primary" htmlType="submit">
