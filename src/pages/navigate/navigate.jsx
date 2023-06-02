@@ -14,7 +14,7 @@ export class NavigateActivity extends React.Component {
     super(props);
     this.validatePlaceSelect = this.validatePlaceSelect.bind(this);
     this.state = {
-      placeArray: ["placeholder"],
+      placeArray: [],
       placeObj: {},
       isLoadMap: false,
       navNum: 2,
@@ -134,7 +134,7 @@ export class NavigateActivity extends React.Component {
     const optionJSX = this.state.placeArray.map((item, index) => {
       // console.log(item);
       return (
-        <Form.Select.Option value={item} key={item.id}>
+        <Form.Select.Option value={item.id} key={item.id}>
           {item.name}
         </Form.Select.Option>
       );
@@ -267,10 +267,10 @@ export class NavigateActivity extends React.Component {
                                 }
                               }}
                             >
-                              <Form.Select.Option value="0">
+                              <Form.Select.Option value={"0"}>
                                 步行
                               </Form.Select.Option>
-                              <Form.Select.Option value="1">
+                              <Form.Select.Option value={"1"}>
                                 自行车
                               </Form.Select.Option>
                             </Form.Select>
@@ -285,7 +285,7 @@ export class NavigateActivity extends React.Component {
                         (_, i) => i + 1
                       ).map((item) => {
                         return (
-                          <div>
+                          <div key={item}>
                             <Form.Select
                               key={item}
                               name={`place${item}`}
@@ -294,6 +294,11 @@ export class NavigateActivity extends React.Component {
                               style={{
                                 width: "90%",
                               }}
+                              initValue={
+                                item == this.state.navNum && bus.setDestId != -1
+                                  ? bus.setDestId
+                                  : null
+                              }
                             >
                               {optionJSX}
                             </Form.Select>
@@ -328,7 +333,7 @@ export class NavigateActivity extends React.Component {
                                   {
                                     nodes: [],
                                     vehicle: formState.values.vehicle,
-                                    ret: formState.values.ret?1:0,
+                                    ret: formState.values.ret ? 1 : 0,
                                   }
                                 ),
                               })
@@ -373,9 +378,13 @@ export class NavigateActivity extends React.Component {
                                           },
                                         ],
                                         lineStyle: {
-                                          ...this.state.mapOption.series[0].lineStyle,
-                                          color: formState.values["vehicle"]==0? "#c46e54":"#005BC8",
-                                        }
+                                          ...this.state.mapOption.series[0]
+                                            .lineStyle,
+                                          color:
+                                            formState.values["vehicle"] == 0
+                                              ? "#c46e54"
+                                              : "#005BC8",
+                                        },
                                       },
                                     ],
                                   },

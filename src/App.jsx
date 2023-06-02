@@ -1,6 +1,15 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { Layout, Col, Row, Slider, Nav, Toast } from "@douyinfe/semi-ui";
+import {
+  Layout,
+  Col,
+  Row,
+  Slider,
+  Nav,
+  Toast,
+  Modal,
+  Button,
+} from "@douyinfe/semi-ui";
 import {
   HashRouter as Router,
   Route,
@@ -38,7 +47,68 @@ export function App(props) {
   const [timeState, setTimeState] = useState(bus.timeState);
   const [date, setDate] = useState(bus.date);
   const [isAdmin, setIsAdmin] = useState(bus.isAdmin);
+  const [isShowAlertPage, setShowAlertPage] = useState(false);
+  const [alertEvent, setAlertEvent] = useState({});
   const location = useLocation();
+  useEffect(() => {
+    console.log(alertEvent);
+    console.log(bus.places);
+  }, [alertEvent]);
+  const AlertModalContent = (
+    <div
+      style={{
+        display: "flex",
+        flexFlow: "column",
+        placeContent: "center",
+        placeItems: "center",
+      }}
+    >
+      <div>日程提醒</div>
+      <div>日程标题：{alertEvent.title}</div>
+      <div>
+        日程时间：
+        {alertEvent.start &&
+          new Date(alertEvent.start * 1000).getMonth() +
+            1 +
+            "月" +
+            new Date(alertEvent.start * 1000).getDate() +
+            "日 " +
+            new Date(alertEvent.start * 1000).getHours() +
+            "时-" +
+            new Date(alertEvent.end * 1000).getHours() +
+            "时"}
+      </div>
+      <div>
+        日程地点：
+        {alertEvent.isPlace &&
+          (bus.places.find((item) => item.id == alertEvent.placeID)
+            ? bus.places.find((item) => item.id == alertEvent.placeID).name
+            : "非法 ID，查询不到对应地点")}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexFlow: "row",
+          width: "50%",
+          placeContent: "space-evenly",
+          margin: "10px",
+        }}
+      >
+        {alertEvent.isPlace && (
+          <Button
+            onClick={() => {
+              bus.setDestId = alertEvent.placeID;
+              setShowAlertPage(false);
+              navigate("/navigate");
+            }}
+          >
+            进入导航
+          </Button>
+        )}
+        <Button onClick={() => setShowAlertPage(false)}>取消</Button>
+      </div>
+    </div>
+  );
   const timeChangeHandler = () => {
     if (timeState == "forward") {
       let timeStamp = date.getTime() + 1000 * 60 * 30;
@@ -48,7 +118,10 @@ export function App(props) {
           item.start * 1000 - bus.date.getTime() >= 1000 * 60 * 30 &&
           item.alert
         ) {
-          Toast.info(item.title + "快要开始了！");
+          setTimeState("pause");
+          setAlertEvent(item);
+          setShowAlertPage(true);
+          // Toast.info(item.title + "快要开始了！");
         }
       }
       bus.date = date;
@@ -372,6 +445,15 @@ export function App(props) {
           <Outlet />
         </Content>
       </Layout>
+      <Modal
+        visible={isShowAlertPage}
+        title="事件详情页"
+        footer={null}
+        closable={true}
+        centered={false}
+      >
+        {AlertModalContent}
+      </Modal>
     </Layout>
   );
 }

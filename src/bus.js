@@ -59,4 +59,5 @@ export const bus = {
   ],
   isAdmin: true,
   activityArray: [],
+  setDestId: -1,
 }
