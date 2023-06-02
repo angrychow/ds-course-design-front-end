@@ -194,7 +194,7 @@ export class NavigateActivity extends React.Component {
                 validateFields={this.validatePlaceSelect}
                 className="scrollbarContainer"
               >
-                {(formState, formAPI, values) => (
+                {({formState, values, formApi}) => (
                   <>
                     <div
                       style={{
@@ -261,9 +261,11 @@ export class NavigateActivity extends React.Component {
                               // 如果选择了步行,disable掉回程开关
                               onChange={(value) => {
                                 if (value == 0) {
-                                  // TODO: 这里有bug, formAPI undefined
-                                  // formAPI.setValue("ret", false);
-                                  // formAPI.setTouched("ret", true);
+                                  formApi.setValue("ret", false);
+                                  // TODO disable 开关
+                                  // formApi.setFieldS("ret", {
+                                  //   disabled: true,
+                                  // });
                                 }
                               }}
                             >
@@ -327,7 +329,7 @@ export class NavigateActivity extends React.Component {
                               .post("/map/navigate", formState.values, {
                                 params: Object.values(formState.values).reduce(
                                   (acc, cur) => {
-                                    acc["nodes"].push(cur.id);
+                                    acc["nodes"].push(cur);
                                     return acc;
                                   },
                                   {
