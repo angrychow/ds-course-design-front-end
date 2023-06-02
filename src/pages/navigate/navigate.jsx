@@ -276,6 +276,9 @@ export class NavigateActivity extends React.Component {
                               <Form.Select.Option value={"1"}>
                                 自行车
                               </Form.Select.Option>
+                              <Form.Select.Option value={"2"}>
+                                mixed
+                              </Form.Select.Option>
                             </Form.Select>
                           </div>
                         </div>
