@@ -332,17 +332,25 @@ export class NavigateActivity extends React.Component {
                             console.log(formState.values);
                             myAxios
                               .post("/map/navigate", formState.values, {
-                                params: Object.values(formState.values).reduce(
-                                  (acc, cur) => {
-                                    acc["nodes"].push(cur);
-                                    return acc;
-                                  },
-                                  {
+                                params: (() => {
+                                  const obj = {
                                     nodes: [],
                                     vehicle: formState.values.vehicle,
                                     ret: formState.values.ret ? 1 : 0,
+                                  };
+                                  for (let item in formState.values) {
+                                    console.log(item);
+                                    if (
+                                      item == "vehicle" ||
+                                      item == "num" ||
+                                      item == "ret"
+                                    ) {
+                                      continue;
+                                    }
+                                    obj.nodes.push(formState.values[item]);
                                   }
-                                ),
+                                  return obj;
+                                })(),
                               })
                               .then((data) => {
                                 const nodes = data.route;
